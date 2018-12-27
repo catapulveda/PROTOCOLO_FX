@@ -19,10 +19,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import static clases.Metodos.getInteger;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDatePicker;
 import com.sun.rowset.CachedRowSetImpl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -242,6 +244,8 @@ public class ProtocoloController implements Initializable {
     private Label lblInfo;
     @FXML
     private Label lblpcc;
+    @FXML
+    private JFXDatePicker cjfecha;
             
     @Override
     public void initialize(URL url, ResourceBundle rb) {                
@@ -311,15 +315,6 @@ public class ProtocoloController implements Initializable {
         colNominal.setCellValueFactory(new PropertyValueFactory<>("nominal"));        
         colMinima.setCellValueFactory(new PropertyValueFactory<>("minima"));
         colMaxima.setCellValueFactory(new PropertyValueFactory<>("maxima"));
-        colMaxima.setCellFactory(tc -> new TableCell<TablaDos, Double>(){
-            @Override
-            protected void updateItem(Double item, boolean empty) {
-                super.updateItem(item, empty);
-                if(!empty){
-                    setText(new DecimalFormat("#.000").format(item));
-                }
-            }            
-        });
         
         UpDown(cjprotocolo, cjserie, cjprotocolo);
         UpDown(cjserie, cjempresa, cjprotocolo);
@@ -328,40 +323,40 @@ public class ProtocoloController implements Initializable {
         
         Metodos.onlyDouble(cjkva, comboFases, cjmarca);
         comboFases.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){cjano.requestFocus();}});
-        Metodos.onlyInteger(cjano, cjvp, comboFases);
+        Metodos.onlyInteger(cjano, cjvp, cjkva);
         Metodos.onlyInteger(cjvp, cjvs, cjano);
         Metodos.onlyInteger(cjvs, comboServicio, cjvp);
         comboServicio.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){comboClaseAislamiento.requestFocus();}});
 //        Metodos.onlyInteger(cjcalentamientodevanado, comboClaseAislamiento);
         comboClaseAislamiento.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){cji1.requestFocus();}});
-        Metodos.onlyDouble(cji1, cji2, cjalturadiseno);
+        Metodos.onlyDouble(cji1, cji2, cjvs);
         Metodos.onlyDouble(cji2, cjtemperaturadeprueba, cji1);
         Metodos.onlyInteger(cjtemperaturadeprueba, comboConmutador, cji2);
         comboConmutador.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){comboAceite.requestFocus();}});
         
         comboAceite.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){comboReferencia.requestFocus();}});
         comboReferencia.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){cjruptura.requestFocus();}});                
-        Metodos.onlyInteger(cjruptura, cjtiemporesistencia, comboReferencia);
+        Metodos.onlyInteger(cjruptura, cjtiemporesistencia, cjtemperaturadeprueba);
         
         Metodos.onlyInteger(cjtiemporesistencia, cjATcontraBT, cjruptura);
-        Metodos.onlyDouble(cjATcontraBT, cjATcontraTierra, comboTensiondeprueba);
+        Metodos.onlyDouble(cjATcontraBT, cjATcontraTierra, cjtiemporesistencia);
         Metodos.onlyDouble(cjATcontraTierra, cjBTcontraTierra, cjATcontraBT);
         Metodos.onlyDouble(cjBTcontraTierra, comboConexion, cjATcontraTierra);
         comboConexion.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){comboPolaridad.requestFocus();}});
         comboPolaridad.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){cjUV.requestFocus();}});
         
-        Metodos.onlyDouble(cjUV, cjVW, comboPolaridad);
+        Metodos.onlyDouble(cjUV, cjVW, cjBTcontraTierra);
         Metodos.onlyDouble(cjVW, cjWU, cjUV);
         Metodos.onlyDouble(cjWU, comboMaterialAlta, cjVW);
-        comboMaterialAlta.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){cjXY.requestFocus();}});
-        Metodos.onlyDouble(cjproresalta, null, null);
-        Metodos.onlyDouble(cjXY, cjYZ, comboMaterialAlta);
+        Metodos.onlyDouble(cjproresalta, comboMaterialAlta, cjWU);
+        comboMaterialAlta.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){cjXY.requestFocus();}});        
+        Metodos.onlyDouble(cjXY, cjYZ, cjproresalta);
         Metodos.onlyDouble(cjYZ, cjZX, cjXY);
-        Metodos.onlyDouble(cjZX, comboMaterialBaja, cjYZ);
+        Metodos.onlyDouble(cjZX, comboMaterialBaja, cjYZ);        
+        Metodos.onlyDouble(cjproresbaja, comboMaterialBaja, cjZX);
         comboMaterialBaja.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){cjBTcontraATyTierra.requestFocus();}});
-        Metodos.onlyDouble(cjproresbaja, null, null);
                 
-        Metodos.onlyDouble(cjBTcontraATyTierra, cjATcontraBTyTierra, cjBTcontraATyTierra);
+        Metodos.onlyDouble(cjBTcontraATyTierra, cjATcontraBTyTierra, cjproresbaja);
         Metodos.onlyDouble(cjATcontraBTyTierra, cjtiempoaplicado, cjBTcontraATyTierra);
         Metodos.onlyInteger(cjtiempoaplicado, cjFrecuenciaInducida, cjATcontraBTyTierra);
         //Metodos.onlyInteger(cjtensionBT, cjFrecuenciaInducida);
@@ -408,12 +403,12 @@ public class ProtocoloController implements Initializable {
         cjvs.textProperty().bindBidirectional(cjtensionBT2.textProperty());
             
         /*HABILITAR CAMPOS SEGUN LA FASE DEL TRANSFORMADOR*/
-        cjVW.disableProperty().bind(comboFases.valueProperty().isEqualTo(3));
-        cjVW.disableProperty().bind(comboFases.valueProperty().isEqualTo(3));
-        cjYZ.disableProperty().bind(comboFases.valueProperty().isEqualTo(3));
-        cjWU.disableProperty().bind(comboFases.valueProperty().isEqualTo(3));
-        cjiv.disableProperty().bind(comboFases.valueProperty().isEqualTo(3));
-        cjiw.disableProperty().bind(comboFases.valueProperty().isEqualTo(3));
+        cjVW.editableProperty().bind(comboFases.valueProperty().isEqualTo(3));
+        cjVW.editableProperty().bind(comboFases.valueProperty().isEqualTo(3));
+        cjYZ.editableProperty().bind(comboFases.valueProperty().isEqualTo(3));
+        cjWU.editableProperty().bind(comboFases.valueProperty().isEqualTo(3));
+        cjiv.editableProperty().bind(comboFases.valueProperty().isEqualTo(3));
+        cjiw.editableProperty().bind(comboFases.valueProperty().isEqualTo(3));
         
         comboClaseAislamiento.getSelectionModel().selectedIndexProperty().addListener((ObservableValue<? extends Number> evt, Number old, Number neww) -> {
             switch(neww.intValue()){
@@ -503,6 +498,7 @@ public class ProtocoloController implements Initializable {
         cjFrecuenciaInducida.setText("414");        
         cjcalentamientodevanado.setText("65");
         cjespesor.setText("100");
+        cjfecha.setValue(LocalDate.now());
     }
     
     
