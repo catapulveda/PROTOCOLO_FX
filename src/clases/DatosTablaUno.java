@@ -5,7 +5,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class TablaUno {
+public class DatosTablaUno {
 
     private final IntegerProperty posicion = new SimpleIntegerProperty();
     private final IntegerProperty tension = new SimpleIntegerProperty();
@@ -13,7 +13,7 @@ public class TablaUno {
     private final DoubleProperty fasev = new SimpleDoubleProperty();
     private final DoubleProperty fasew = new SimpleDoubleProperty();
 
-    public TablaUno() {
+    public DatosTablaUno() {
     }
     
     public double getFasew() {

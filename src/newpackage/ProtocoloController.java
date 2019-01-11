@@ -4,7 +4,9 @@ import clases.Conexion;
 import clases.Metodos;
 import static clases.Metodos.getDouble;
 import clases.TablaDos;
-import clases.TablaUno;
+import clases.DatosTablaUno;
+import clases.DoubleCell;
+import clases.IntegerCell;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,6 +20,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import static clases.Metodos.getInteger;
+import clases.MyDoubleStringConverter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.sun.rowset.CachedRowSetImpl;
@@ -32,20 +35,30 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.TablePosition;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.util.Callback;
+import javafx.util.converter.NumberStringConverter;
+import clases.EditCell;
 
 public class ProtocoloController implements Initializable {
 
+    DecimalFormat df = new DecimalFormat(".000");
+    private ObservableList<DatosTablaUno> listaDatosTablaUno = FXCollections.observableArrayList();
     StringProperty ESTADO_TRAFO = new SimpleStringProperty("Servicio");
     
     @FXML
@@ -213,19 +226,19 @@ public class ProtocoloController implements Initializable {
     @FXML
     private JFXTextField cjcliente;
     @FXML
-    private TableView<TablaUno> tablaUno;
+    private TableView<DatosTablaUno> tablaUno;
     @FXML
     private TableView<TablaDos> tablaDos;
     @FXML
-    private TableColumn<TablaUno, Integer> colPosicion;
+    private TableColumn<DatosTablaUno, Integer> colPosicion;
     @FXML
-    private TableColumn<TablaUno, Integer> colTension;
+    private TableColumn<DatosTablaUno, Integer> colTension;
     @FXML
-    private TableColumn<TablaUno, Double> colFaseU;
+    private TableColumn<DatosTablaUno, Double> colFaseU;
     @FXML
-    private TableColumn<TablaUno, Double> colFaseV;
+    private TableColumn<DatosTablaUno, Number> colFaseV;
     @FXML
-    private TableColumn<TablaUno, Double> colFaseW;
+    private TableColumn<DatosTablaUno, Number> colFaseW;
     @FXML
     private TableColumn<TablaDos, Double> colNominal;
     @FXML
@@ -246,9 +259,15 @@ public class ProtocoloController implements Initializable {
     private Label lblpcc;
     @FXML
     private JFXDatePicker cjfecha;
+    @FXML
+    private MenuItem menuCalcular;
             
     @Override
-    public void initialize(URL url, ResourceBundle rb) {                
+    public void initialize(URL url, ResourceBundle rb) {
+        
+        menuCalcular.setOnAction(event->{
+            btnCalcular.fire();
+        });        
         
         comboFases.getItems().addAll(1,3);
         comboFases.getSelectionModel().selectFirst();
@@ -299,15 +318,54 @@ public class ProtocoloController implements Initializable {
         
         comboMaterialBaja.getItems().addAll("COBRE","ALUMINIO");
         comboMaterialBaja.getSelectionModel().selectFirst();
-        clases.Metodos.fontComboBox(comboMaterialBaja);
+        clases.Metodos.fontComboBox(comboMaterialBaja);        
         
-        clases.Metodos.configTable(tablaUno);
-        clases.Metodos.configTable(tablaDos);
+        tablaUno.setOnKeyPressed(event -> {
+            if (event.getCode().isDigitKey() || event.getCode() == KeyCode.BACK_SPACE) {
+                final TablePosition focusedCell = tablaUno.focusModelProperty().get().focusedCellProperty().get();
+                tablaUno.edit(focusedCell.getRow(), focusedCell.getTableColumn());
+            } else if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER) {
+                tablaUno.getSelectionModel().selectNext();
+                event.consume();
+            } else if (event.getCode() == KeyCode.LEFT) {
+                if (tablaUno.getSelectionModel().isCellSelectionEnabled()) {
+                    TablePosition pos = tablaUno.getFocusModel().getFocusedCell();
+                    if (pos.getColumn() - 1 >= 0) {
+                        tablaUno.getSelectionModel().select(pos.getRow(), tablaUno.getVisibleLeafColumn((tablaUno.getVisibleLeafIndex(pos.getTableColumn()) + -1)));
+                    } else if (pos.getRow() < tablaUno.getItems().size()) {
+                        tablaUno.getSelectionModel().select(pos.getRow() - 1, tablaUno.getVisibleLeafColumn(tablaUno.getVisibleLeafColumns().size() - 1));
+                    }
+                } else {
+                    int focusIndex = tablaUno.getFocusModel().getFocusedIndex();
+                    if (focusIndex == -1) {
+                        tablaUno.getSelectionModel().select(tablaUno.getItems().size() - 1);
+                    } else if (focusIndex > 0) {
+                        tablaUno.getSelectionModel().select(focusIndex - 1);
+                    }
+                }
+                event.consume();
+            }
+        });
+        tablaUno.setEditable(true);
+        tablaUno.getSelectionModel().setCellSelectionEnabled(true);
+        tablaUno.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        tablaUno.setItems(listaDatosTablaUno);
+        
+        colFaseU.setEditable(true);        
+        colFaseV.setEditable(true);
+        colFaseW.setEditable(true);        
         
         /***CONFIGURAR TABLA UNO DE LAS TENSIONES***/
         /**/colPosicion.setCellValueFactory(new PropertyValueFactory<>("posicion"));
         /**/colTension.setCellValueFactory(new PropertyValueFactory<>("tension"));
-        /**/colFaseU.setCellValueFactory(new PropertyValueFactory<>("faseu"));
+        
+        colFaseU.setCellValueFactory(new PropertyValueFactory<>("faseu"));
+        //colFaseU.setCellFactory(EditCell.<DatosTablaUno, Double>forTableColumn(new MyDoubleStringConverter()));
+        colFaseU.setCellFactory(tc->new DoubleCell());
+//        colFaseU.setOnEditCommit(event->{
+//            ( (DatosTablaUno) event.getTableView().getItems().get(event.getTablePosition().getRow()) ).setFaseu(event.getNewValue());
+//        });
+        
         /**/colFaseV.setCellValueFactory(new PropertyValueFactory<>("fasev"));
         /**/colFaseW.setCellValueFactory(new PropertyValueFactory<>("fasew"));
         
@@ -511,11 +569,11 @@ public class ProtocoloController implements Initializable {
         }
         tablaUno.getItems().clear();
         for (int i = 1; i <= 5; i++) {
-            TablaUno tu = new TablaUno();
+            DatosTablaUno tu = new DatosTablaUno();
             tu.setPosicion((i));
             tu.setTension((int) Math.round(Integer.parseInt(cjvp.getText())*factor));
             factor -= 0.025;
-            tablaUno.getItems().add(tu);
+            listaDatosTablaUno.add(tu);
         }        
     }
     
@@ -538,7 +596,7 @@ public class ProtocoloController implements Initializable {
         
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText(null);
+            alert.setHeaderText("Faltan Datos");
 
             int vp = getInteger(cjvp), 
                 vs = getInteger(cjvs), 
@@ -550,19 +608,23 @@ public class ProtocoloController implements Initializable {
 
             String SERVICIO = comboServicio.getValue(), 
                    ACEITE = comboAceite.getValue(),
-                   TABLA = null;
+                   TABLA = null,
+                   MSG_ERROR = "";
 
-            if(vp==0){            
-                alert.setContentText("INGRESE EL VOLTAJE DE ALTA TENSIÓN");
+            if(vp==0){
+                MSG_ERROR = "INGRESE EL VOLTAJE DE ALTA TENSIÓN\n";
             }        
             if(vs == 0){
-                alert.setContentText("INGRESE EL VOLTAJE DE BAJA TENSIÓN");
+                MSG_ERROR += "INGRESE EL VOLTAJE DE BAJA TENSIÓN\n";
             }
+            cargarTablaUno(evt);
+            cargarTablaDos(evt);
             if(ano == 0){
-                alert.setContentText("INGRESE EL AÑO");
+                MSG_ERROR += "INGRESE EL AÑO\n";
             }
-            if(temperatura==0){            
-                alert.setContentText("INGRESE LA TEMPERATURA DE PRUEBA");
+            if(temperatura==0){
+                System.out.println("TEMPERTURAAA");
+                MSG_ERROR += "INGRESE LA TEMPERATURA DE PRUEBA\n";
             }
 
             if(ACEITE.equals("SECO")){
@@ -601,10 +663,11 @@ public class ProtocoloController implements Initializable {
                 }
             }
             
-            if(alert.getContentText()!=null){
+            if(!MSG_ERROR.isEmpty()){
+                alert.setContentText(MSG_ERROR);
                 alert.show();
                 return;
-            }
+            }                        
 
             Conexion con = new Conexion();
             ResultSet crs = null;
@@ -692,12 +755,20 @@ public class ProtocoloController implements Initializable {
             double proresalta = (getDouble(cjUV)+getDouble(cjVW)+getDouble(cjWU))/((fase==1)?1:3);
             double proresbaja = (getDouble(cjXY)+getDouble(cjYZ)+getDouble(cjZX))/((fase==1)?1:3);
             
-            cjproresalta.setText(""+proresalta);
-            cjproresbaja.setText(""+proresbaja);
+            cjproresalta.setText(""+Math.round(proresalta*10d)/10d);
+            cjproresbaja.setText(""+Math.round(proresbaja*10d)/10d);
             
             double promedioi = (((getDouble(cjiu)+getDouble(cjiv)+getDouble(cjiw))/((fase==1)?1:3))/i2)*100;
             
             cjpromedioi.setText(""+Math.round(promedioi*100d)/100d);
+            
+            double POMEDIDO = getDouble(cjpomedido);
+            if(POMEDIDO<=0){
+                alert.setContentText("Ingrese el valor de las Po Medidas(W)");
+                cjpomedido.requestFocus();
+                alert.show();
+                return;
+            }
             
             double I2R = (fase==1)?((Math.pow(i1, 2) * proresalta) + (Math.pow(i2, 2) * (proresbaja / 1000))):
                     1.5 * ((Math.pow(i1, 2) * proresalta) + (Math.pow(i2, 2) * (proresbaja / 1000)));
@@ -710,10 +781,12 @@ public class ProtocoloController implements Initializable {
             if(PCUMEDIDO<=0){
                 alert.setContentText("Ingrese el valor de las Pcc Medidas(W)");
                 alert.show();
+                return;
             }
             if(VCC<=0){
                 alert.setContentText("Ingrese el valor del voltaje de corto circuito");
                 alert.show();
+                return;
             }
             double R = PCUMEDIDO / (10*KVA);
             double R85 = R * K;
@@ -730,21 +803,12 @@ public class ProtocoloController implements Initializable {
             REG = Math.pow(R85, 2) + Math.pow(X, 2) + 200 * R85 * 0.8 + 200 * X * 0.6 + 10000;
             REG = Math.sqrt(REG);
             REG = REG - 100;
-            cjregulacion.setText(""+Math.round(REG*100d)/100d);
-            
-            double POMEDIDO = getDouble(cjpomedido);
-            if(POMEDIDO<=0){
-                alert.setContentText("Ingrese el valor de las Po Medidas(W)");
-                alert.show();
-            }
+            cjregulacion.setText(""+Math.round(REG*100d)/100d);                        
             
             double PCU85 = ((PCUMEDIDO - I2R) / K) + I2R85;
             cjpcca85.setText(""+Math.round(PCU85*100d)/100d);
             
-            double EF = (0.8 * KVA * Math.pow(10, 5)) / (0.8 * KVA * Math.pow(10, 3) + POMEDIDO + PCU85);
-            
-            cargarTablaUno(evt);
-            cargarTablaDos(evt);
+            double EF = (0.8 * KVA * Math.pow(10, 5)) / (0.8 * KVA * Math.pow(10, 3) + POMEDIDO + PCU85);                        
         });
                 
     }
@@ -757,6 +821,21 @@ public class ProtocoloController implements Initializable {
                 n3.requestFocus();
             }
         }); 
+    }
+    
+    private Callback<TableColumn<DatosTablaUno, Number>, TableCell<DatosTablaUno, Number>> createNumberCellFactory() {
+        Callback<TableColumn<DatosTablaUno, Number>, TableCell<DatosTablaUno, Number>> factory = TextFieldTableCell.forTableColumn(new NumberStringConverter(){
+            @Override
+            public Number fromString(String string) {
+                return Double.parseDouble(string.replace(",", "."));
+            }
+
+            @Override
+            public String toString(Number object) {                
+                return df.format(object);
+            }
+        });
+        return factory;
     }
     
 }
