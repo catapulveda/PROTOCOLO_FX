@@ -13,6 +13,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -30,8 +31,10 @@ public class DoubleCell<S, T> extends TextFieldTableCell<S, T> {
     
     private final DecimalFormat format = new DecimalFormat(".000");    
     StringConverter<Double> converter = null;
+    
+    private TableView<DatosTablaDos> tablaDos;
 
-    public DoubleCell() {
+    public DoubleCell(TableView tablaDos) {
         converter = new StringConverter<Double>() {
             @Override
             public String toString(Double object) {
@@ -42,23 +45,14 @@ public class DoubleCell<S, T> extends TextFieldTableCell<S, T> {
                 try {                
                     return string.isEmpty() ? format.parse(string).doubleValue() : Double.parseDouble(string.replace(",", "."));
                 } catch (ParseException ex) {
-                    Logger.getLogger(IntegerCell.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DoubleCell.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
             }
         };
         
-        setConverter(new StringConverter<T>() {
-            @Override
-            public String toString(T object) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public T fromString(String string) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        });
+        this.tablaDos = tablaDos;
+        setAlignment(Pos.CENTER);
     }
 
     @Override
@@ -133,9 +127,20 @@ public class DoubleCell<S, T> extends TextFieldTableCell<S, T> {
                 }
                 setText(null);
                 setGraphic(textField);
-            } else {
+            } else {                
                 setText(getItemText());
                 setGraphic(null);
+                
+                TableRow<DatosTablaUno> row = getTableRow();
+                
+                double min = tablaDos.getItems().get(getIndex()).getMinima();
+                double max = tablaDos.getItems().get(getIndex()).getMaxima();                
+                                
+                if(min > Double.parseDouble(getItem().toString()) || Double.parseDouble(getItem().toString()) > max){
+                    setStyle("-fx-background-color: #D14836; -fx-text-fill: white; -fx-font-weight: bold;");
+                }else{
+                    setStyle(null);
+                }
             }
         }
     }

@@ -455,6 +455,9 @@
                                     <TableColumn fx:id="colFaseV" prefWidth="75.0" text="FASE V" />
                                     <TableColumn fx:id="colFaseW" prefWidth="75.0" text="FASE W" />
                                 </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
                               </TableView>
                               <TableView fx:id="tablaDos" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                 <columns>

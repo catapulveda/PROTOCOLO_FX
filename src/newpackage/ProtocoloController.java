@@ -3,10 +3,9 @@ package newpackage;
 import clases.Conexion;
 import clases.Metodos;
 import static clases.Metodos.getDouble;
-import clases.TablaDos;
+import clases.DatosTablaDos;
 import clases.DatosTablaUno;
 import clases.DoubleCell;
-import clases.IntegerCell;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,7 +19,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import static clases.Metodos.getInteger;
-import clases.MyDoubleStringConverter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.sun.rowset.CachedRowSetImpl;
@@ -53,7 +51,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
-import clases.EditCell;
 
 public class ProtocoloController implements Initializable {
 
@@ -228,7 +225,7 @@ public class ProtocoloController implements Initializable {
     @FXML
     private TableView<DatosTablaUno> tablaUno;
     @FXML
-    private TableView<TablaDos> tablaDos;
+    private TableView<DatosTablaDos> tablaDos;
     @FXML
     private TableColumn<DatosTablaUno, Integer> colPosicion;
     @FXML
@@ -240,11 +237,11 @@ public class ProtocoloController implements Initializable {
     @FXML
     private TableColumn<DatosTablaUno, Number> colFaseW;
     @FXML
-    private TableColumn<TablaDos, Double> colNominal;
+    private TableColumn<DatosTablaDos, Double> colNominal;
     @FXML
-    private TableColumn<TablaDos, Double> colMinima;
+    private TableColumn<DatosTablaDos, Double> colMinima;
     @FXML
-    private TableColumn<TablaDos, Double> colMaxima;    
+    private TableColumn<DatosTablaDos, Double> colMaxima;    
     @FXML
     private MenuItem menuSalir;
     @FXML
@@ -324,10 +321,18 @@ public class ProtocoloController implements Initializable {
             if (event.getCode().isDigitKey() || event.getCode() == KeyCode.BACK_SPACE) {
                 final TablePosition focusedCell = tablaUno.focusModelProperty().get().focusedCellProperty().get();
                 tablaUno.edit(focusedCell.getRow(), focusedCell.getTableColumn());
-            } else if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.TAB || event.getCode() == KeyCode.ENTER) {
+            } else if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.TAB) {
                 tablaUno.getSelectionModel().selectNext();
                 event.consume();
-            } else if (event.getCode() == KeyCode.LEFT) {
+            }else if(event.getCode() == KeyCode.ENTER){
+                TablePosition tp = tablaUno.getFocusModel().getFocusedCell();
+                if(tp.getRow()==listaDatosTablaUno.size()-1){
+                    tablaUno.getSelectionModel().select(0, tablaUno.getVisibleLeafColumn(tablaUno.getVisibleLeafIndex(tp.getTableColumn())+1));
+                }else{
+                    tablaUno.getSelectionModel().selectBelowCell();
+                }                
+                event.consume();
+            }else if (event.getCode() == KeyCode.LEFT) {
                 if (tablaUno.getSelectionModel().isCellSelectionEnabled()) {
                     TablePosition pos = tablaUno.getFocusModel().getFocusedCell();
                     if (pos.getColumn() - 1 >= 0) {
@@ -349,25 +354,30 @@ public class ProtocoloController implements Initializable {
         tablaUno.setEditable(true);
         tablaUno.getSelectionModel().setCellSelectionEnabled(true);
         tablaUno.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        tablaUno.setItems(listaDatosTablaUno);
-        
-        colFaseU.setEditable(true);        
-        colFaseV.setEditable(true);
-        colFaseW.setEditable(true);        
+        tablaUno.setItems(listaDatosTablaUno);                                
         
         /***CONFIGURAR TABLA UNO DE LAS TENSIONES***/
-        /**/colPosicion.setCellValueFactory(new PropertyValueFactory<>("posicion"));
-        /**/colTension.setCellValueFactory(new PropertyValueFactory<>("tension"));
+        colPosicion.setCellValueFactory(new PropertyValueFactory<>("posicion"));
+        colPosicion.setStyle("-fx-alignment: CENTER;");
         
+        colTension.setCellValueFactory(new PropertyValueFactory<>("tension"));
+        colTension.setStyle("-fx-alignment: CENTER;");
+        
+        colFaseU.setEditable(true);
         colFaseU.setCellValueFactory(new PropertyValueFactory<>("faseu"));
-        //colFaseU.setCellFactory(EditCell.<DatosTablaUno, Double>forTableColumn(new MyDoubleStringConverter()));
-        colFaseU.setCellFactory(tc->new DoubleCell());
+        colFaseU.setCellFactory(tc->new DoubleCell(tablaDos));
+        //colFaseU.setCellFactory(EditCell.<DatosTablaUno, Double>forTableColumn(new MyDoubleStringConverter()));        
 //        colFaseU.setOnEditCommit(event->{
 //            ( (DatosTablaUno) event.getTableView().getItems().get(event.getTablePosition().getRow()) ).setFaseu(event.getNewValue());
 //        });
         
-        /**/colFaseV.setCellValueFactory(new PropertyValueFactory<>("fasev"));
-        /**/colFaseW.setCellValueFactory(new PropertyValueFactory<>("fasew"));
+        colFaseV.setEditable(true);
+        colFaseV.setCellValueFactory(new PropertyValueFactory<>("fasev"));
+        colFaseV.setCellFactory(tc->new DoubleCell(tablaDos));        
+        
+        colFaseW.setEditable(true);
+        colFaseW.setCellValueFactory(new PropertyValueFactory<>("fasew"));
+        colFaseW.setCellFactory(tc->new DoubleCell(tablaDos));        
         
         /***CONFIGURAR TABLS DOS DE LAS NOMINALES***/
         colNominal.setCellValueFactory(new PropertyValueFactory<>("nominal"));        
@@ -583,7 +593,7 @@ public class ProtocoloController implements Initializable {
         tablaDos.getItems().clear();
         tablaUno.getItems().forEach(i->{
             double multiplicador = (comboConmutador.getValue()==1)?1:Math.sqrt(3);
-            TablaDos td = new TablaDos();
+            DatosTablaDos td = new DatosTablaDos();
             td.setNominal( Math.round( ((i.getTension()*multiplicador)/vs)*1000d )/1000d );
             td.setMinima(Math.round(((((i.getTension()*multiplicador)/vs)*0.995)*1000d))/1000d);
             td.setMaxima( Math.round( (((i.getTension()*multiplicador)/vs)*1.005)*1000d )/1000d );

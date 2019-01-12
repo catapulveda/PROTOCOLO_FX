@@ -5,3 +5,16 @@
     -fx-text-fill: #383640;
     
 }
+
+.table-cell {
+ /*-fx-padding: 3 3 3 3;*/
+ /*-fx-background-color: white;*/ 
+}
+
+.table-cell:selected { 
+-fx-background-color: #467bc5; 
+}
+
+.table-row-cell:odd{
+    /*-fx-background-color:lightblue;*/
+}

@@ -3,7 +3,7 @@ package clases;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
-public class TablaDos {
+public class DatosTablaDos {
 
     private final DoubleProperty nominal = new SimpleDoubleProperty();
     private final DoubleProperty minima = new SimpleDoubleProperty();
@@ -47,7 +47,7 @@ public class TablaDos {
 
     
     
-    public TablaDos() {
+    public DatosTablaDos() {
     }
         
 }
