@@ -1,0 +1,494 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="newpackage.ProtocoloController">
+   <children>
+      <VBox>
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="Archivo">
+                  <items>
+                    <MenuItem fx:id="menuSalir" mnemonicParsing="false" text="Salir" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="Editar">
+                    <items>
+                      <MenuItem fx:id="menuCalcular" mnemonicParsing="false" text="Calcular">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="F5" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                    </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
+            <BorderPane fx:id="contenedor" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <left>
+                  <ToolBar orientation="VERTICAL" prefHeight="775.0" prefWidth="48.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+                     <items>
+                        <JFXButton fx:id="btnCalcular" buttonType="RAISED" contentDisplay="TOP" maxWidth="1.7976931348623157E308" onAction="#calcular" ripplerFill="#0e4894">
+                           <graphic>
+                              <FontIcon iconColor="#467bc5" iconLiteral="fa-calculator" iconSize="24" />
+                           </graphic>
+                           <styleClass>
+                              <String fx:value="btn" />
+                              <String fx:value="btn-primary" />
+                              <String fx:value="btn-sm" />
+                           </styleClass>
+                           <font>
+                              <Font name="Serif Bold" size="12.0" />
+                           </font>
+                        </JFXButton>
+                        <Separator maxWidth="1.7976931348623157E308" />
+                        <JFXButton fx:id="btnGuardar" buttonType="RAISED" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" onAction="#guardar" ripplerFill="#0e4894">
+                           <graphic>
+                              <FontIcon iconColor="#467bc5" iconLiteral="fa-save" iconSize="24" />
+                           </graphic>
+                           <styleClass>
+                              <String fx:value="btn" />
+                              <String fx:value="btn-primary" />
+                              <String fx:value="btn-sm" />
+                           </styleClass>
+                           <font>
+                              <Font name="Serif Bold" size="12.0" />
+                           </font>
+                        </JFXButton>
+                     </items>
+                     <effect>
+                        <InnerShadow radius="7.25" width="10.0" />
+                     </effect>
+                  </ToolBar>
+               </left>
+               <center>
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+                     <children>
+                        <GridPane hgap="5.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="92.0" minWidth="10.0" prefWidth="86.66665649414062" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" prefWidth="90.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Protocolo Nº:" GridPane.halignment="RIGHT" />
+                              <Label text="Nº Serie:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                              <Label text="Nº Empresa:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                              <Label text="Marca:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                              <Label text="KVA:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                              <Label text="Fases:" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+                              <Label text="Año:" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                              <Label text="V.P (v):" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+                              <Label text="V.S (v):" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+                              <Label fx:id="lblServicio" text="Servicio:" textAlignment="RIGHT" wrapText="true" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+                              <Label text="Frecuencia (Hz):" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
+                              <Label layoutX="10.0" layoutY="367.0" prefHeight="0.0" text="Refrigeración:" GridPane.halignment="RIGHT" GridPane.rowIndex="11" />
+                              <Label text="Tension Serie:" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
+                              <Label text="NBA AT/BT:" GridPane.halignment="RIGHT" GridPane.rowIndex="13" />
+                              <Label text="Calent. Devn:" GridPane.halignment="RIGHT" GridPane.rowIndex="14" />
+                              <Label text="Clases Aislam:" GridPane.halignment="RIGHT" GridPane.rowIndex="15" />
+                              <Label text="Alt. Diseño:" GridPane.halignment="RIGHT" GridPane.rowIndex="16" />
+                              <Label text="I1:" GridPane.halignment="RIGHT" GridPane.rowIndex="17" />
+                              <Label text="I2:" GridPane.halignment="RIGHT" GridPane.rowIndex="18" />
+                              <Label text="Derv. Prim:" GridPane.halignment="RIGHT" GridPane.rowIndex="19" />
+                              <Label text="Temperatura:" GridPane.halignment="RIGHT" GridPane.rowIndex="20" />
+                              <Label text="Posc. Conmt:" GridPane.halignment="RIGHT" GridPane.rowIndex="21" />
+                              <JFXTextField fx:id="cjprotocolo" alignment="CENTER" labelFloat="true" GridPane.columnIndex="1" />
+                              <JFXTextField fx:id="cjserie" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <JFXTextField fx:id="cjempresa" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <JFXTextField fx:id="cjmarca" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <JFXTextField fx:id="cjkva" alignment="CENTER" text="30" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <ComboBox fx:id="comboFases" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <JFXTextField fx:id="cjano" alignment="CENTER" text="2014" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <JFXTextField fx:id="cjvp" alignment="CENTER" text="13200" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <JFXTextField fx:id="cjvs" alignment="CENTER" text="240" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <ComboBox fx:id="comboServicio" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <JFXTextField fx:id="cjfrecuencia" alignment="CENTER" text="60" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <JFXTextField fx:id="cjtensionserie" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                              <JFXTextField fx:id="cjnba" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                              <JFXTextField fx:id="cjcalentamientodevanado" alignment="CENTER" text="65" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                              <ComboBox fx:id="comboClaseAislamiento" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                              <JFXTextField fx:id="cjalturadiseno" alignment="CENTER" text="1000 MSNM" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                              <JFXTextField fx:id="cji1" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                              <JFXTextField fx:id="cji2" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="18" />
+                              <ComboBox fx:id="comboDerivacion" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="19" />
+                              <JFXTextField fx:id="cjtemperaturadeprueba" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="20" />
+                              <ComboBox fx:id="comboConmutador" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="21" />
+                              <ComboBox fx:id="comboRefrigeracion" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                           </children>
+                        </GridPane>
+                        <GridPane hgap="5.0" prefHeight="741.0" prefWidth="231.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="125.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="49.666656494140625" prefWidth="90.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints maxHeight="20.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Aceite:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                              <Label text="Referencia:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                              <Label text="Ruptura:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                              <Label text="Metodo:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                              <Label text="2) RESISTENCIA AISLAMIENTO" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="BOTTOM">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="1) LIQUIDO AISLANTE" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Tiempo:" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                              <Label text="Tens. Prueba:" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+                              <Label text="AT contra BT(GΩ):" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+                              <Label text="AT contra Tierra(GΩ):" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+                              <Label text="BT contra Tierra(GΩ):" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
+                              <Label text="3) RELACION TRANSFORMACION" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="11" GridPane.valignment="BOTTOM">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Grupo deConexion:" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
+                              <Label text="Polaridad:" GridPane.halignment="RIGHT" GridPane.rowIndex="13" />
+                              <ComboBox fx:id="comboAceite" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <ComboBox fx:id="comboReferencia" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <JFXTextField fx:id="cjruptura" alignment="CENTER" text="40" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <JFXTextField fx:id="cjmetodo" alignment="CENTER" text="ASTM 877" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <JFXTextField fx:id="cjtiemporesistencia" alignment="CENTER" text="60" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <ComboBox fx:id="comboTensiondeprueba" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <JFXTextField fx:id="cjATcontraBT" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <JFXTextField fx:id="cjATcontraTierra" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <JFXTextField fx:id="cjBTcontraTierra" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <ComboBox fx:id="comboConexion" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                              <ComboBox fx:id="comboPolaridad" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                              <Label layoutX="10.0" layoutY="329.0" text="4) RESISTENCIA ENTRE TERMINALES" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="14" GridPane.valignment="BOTTOM">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="cjUV" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                              <JFXTextField fx:id="cjVW" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                              <JFXTextField fx:id="cjWU" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                              <JFXTextField fx:id="cjproresalta" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="18" />
+                              <ComboBox fx:id="comboMaterialAlta" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="19" />
+                              <JFXTextField fx:id="cjXY" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="20" />
+                              <JFXTextField fx:id="cjYZ" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="21" />
+                              <JFXTextField fx:id="cjZX" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="22" />
+                              <JFXTextField fx:id="cjproresbaja" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="23" />
+                              <ComboBox fx:id="comboMaterialBaja" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="24" />
+                              <Label text="U-V(Ω):" GridPane.halignment="RIGHT" GridPane.rowIndex="15" />
+                              <Label text="V-W(Ω):" GridPane.halignment="RIGHT" GridPane.rowIndex="16" />
+                              <Label text="W-U(Ω):" GridPane.halignment="RIGHT" GridPane.rowIndex="17" />
+                              <Label text="Promedio:" GridPane.halignment="RIGHT" GridPane.rowIndex="18" />
+                              <Label text="Material:" GridPane.halignment="RIGHT" GridPane.rowIndex="19" />
+                              <Label text="X-Y(mΩ):" GridPane.halignment="RIGHT" GridPane.rowIndex="20" />
+                              <Label text="Y-Z(mΩ):" GridPane.halignment="RIGHT" GridPane.rowIndex="21" />
+                              <Label text="Z-X(mΩ):" GridPane.halignment="RIGHT" GridPane.rowIndex="22" />
+                              <Label text="Promedio:" GridPane.halignment="RIGHT" GridPane.rowIndex="23" />
+                              <Label text="Material:" GridPane.halignment="RIGHT" GridPane.rowIndex="24" />
+                           </children>
+                        </GridPane>
+                        <GridPane hgap="5.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="122.0" minWidth="10.0" prefWidth="116.33331298828125" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="70.0" prefWidth="70.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="20.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="5) ENSAYO AISLAMIENTO" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label text="BT contra AT y Tierra:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                              <Label text="AT contra BT y Tierra:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                              <Label text="Tiempo de Prueba(s):" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                              <Label text="Tension BT:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                              <Label text="Frecuencia(Hz):" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+                              <Label text="Tiempo de prueba:" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                              <JFXTextField fx:id="cjBTcontraATyTierra" alignment="CENTER" text="10" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <JFXTextField fx:id="cjATcontraBTyTierra" alignment="CENTER" text="34.5" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <JFXTextField fx:id="cjtiempoaplicado" alignment="CENTER" text="60" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <JFXTextField fx:id="cjtensionBT" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <JFXTextField fx:id="cjFrecuenciaInducida" alignment="CENTER" text="414" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <JFXTextField fx:id="cjtiempoInducido" alignment="CENTER" text="17" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label layoutX="41.0" layoutY="13.0" text="6) ENSAYO SIN CARGA" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="BOTTOM">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Tension BT:" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+                              <Label text="Iu(Amp):" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+                              <Label text="Iv(Amp):" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
+                              <Label text="Iw(Amp):" GridPane.halignment="RIGHT" GridPane.rowIndex="11" />
+                              <Label text="Promedio I(%):" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
+                              <Label text="Io Garantizado:" GridPane.halignment="RIGHT" GridPane.rowIndex="13" />
+                              <Label text="Po Medido:" GridPane.halignment="RIGHT" GridPane.rowIndex="14" />
+                              <Label text="Po Garantizado:" GridPane.halignment="RIGHT" GridPane.rowIndex="15" />
+                              <JFXTextField fx:id="cjtensionBT2" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <JFXTextField fx:id="cjiu" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <JFXTextField fx:id="cjiv" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <JFXTextField fx:id="cjiw" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                              <JFXTextField fx:id="cjpromedioi" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                              <JFXTextField fx:id="cjiogarantizado" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                              <JFXTextField fx:id="cjpomedido" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                              <JFXTextField fx:id="cjpogarantizado" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                              <Label layoutX="52.0" layoutY="213.0" text="7) ENSAYO CORTO CIRCUITO" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="16" GridPane.valignment="BOTTOM">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Vcc(V):" GridPane.halignment="RIGHT" GridPane.rowIndex="17" />
+                              <Label text="Pcc Medido(W):" GridPane.halignment="RIGHT" GridPane.rowIndex="18" />
+                              <Label fx:id="lblpcc" text="Pcc a 85º(W):" GridPane.halignment="RIGHT" GridPane.rowIndex="19" />
+                              <Label text="Pcc Garantizado:" GridPane.halignment="RIGHT" GridPane.rowIndex="20" />
+                              <Label text="I2r(W):" GridPane.halignment="RIGHT" GridPane.rowIndex="21" />
+                              <Label text="I2r a 85º(W):" GridPane.halignment="RIGHT" GridPane.rowIndex="22" />
+                              <Label text="Z(%):" GridPane.halignment="RIGHT" GridPane.rowIndex="23" />
+                              <Label text="Z 85º(%):" GridPane.halignment="RIGHT" GridPane.rowIndex="24" />
+                              <Label text="Z Garantizado:" GridPane.halignment="RIGHT" GridPane.rowIndex="25" />
+                              <JFXTextField fx:id="cjvcc" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                              <JFXTextField fx:id="cjpccmedido" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="18" />
+                              <JFXTextField fx:id="cjpcca85" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="19" />
+                              <JFXTextField fx:id="cjpccgarantizado" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="20" />
+                              <JFXTextField fx:id="cji2r" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="21" />
+                              <JFXTextField fx:id="cji2ra85" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="22" />
+                              <JFXTextField fx:id="cjz" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="23" />
+                              <JFXTextField fx:id="cjza85" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="24" />
+                              <JFXTextField fx:id="cjzgarantizado" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="25" />
+                           </children>
+                        </GridPane>
+                        <GridPane hgap="5.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="93.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints maxHeight="-Infinity" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="20.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="10) CARACTERISTICAS" underline="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Masa(Kg):" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                              <Label text="Vol. Aceite(L):" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                              <Label text="Largo(mm):" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+                              <Label text="Ancho(mm):" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+                              <Label text="Alto(mm):" GridPane.halignment="RIGHT" GridPane.rowIndex="7" />
+                              <Label text="Color:" GridPane.halignment="RIGHT" GridPane.rowIndex="8" />
+                              <Label text="Espesor(µ):" GridPane.halignment="RIGHT" GridPane.rowIndex="9" />
+                              <Label text="Nº Elementos:" GridPane.halignment="RIGHT" GridPane.rowIndex="10" />
+                              <Label text="Largo Elem(mm):" GridPane.halignment="RIGHT" GridPane.rowIndex="11" />
+                              <Label text="Ancho Ele(mm):" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
+                              <JFXTextField fx:id="cjmasa" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <JFXTextField fx:id="cjaceite" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <JFXTextField fx:id="cjlargo" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <JFXTextField fx:id="cjancho" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <JFXTextField fx:id="cjalto" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <JFXTextField fx:id="cjcolor" alignment="CENTER" text="GRIS" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <JFXTextField fx:id="cjespesor" alignment="CENTER" text="110" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <JFXTextField fx:id="cjelementos" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <JFXTextField fx:id="cjlargoelemento" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                              <JFXTextField fx:id="cjanchoelemento" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                              <Label layoutX="47.0" layoutY="149.0" text="8) Regulación:" underline="true">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="31.0" text="9) Eficiencia:" underline="true" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <JFXTextField fx:id="cjregulacion" alignment="CENTER" editable="false" GridPane.columnIndex="1" />
+                              <JFXTextField fx:id="cjeficiencia" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="OBSERVACIONES" underline="true" GridPane.columnSpan="2" GridPane.rowIndex="17">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <TextArea fx:id="cjobservaciones" prefHeight="200.0" prefWidth="200.0" promptText="Ingrese observaciones..." wrapText="true" GridPane.columnSpan="2" GridPane.rowIndex="18" />
+                              <Label text="Cliente:" GridPane.rowIndex="14" />
+                              <JFXTextField fx:id="cjcliente" GridPane.columnSpan="2" GridPane.rowIndex="15" />
+                              <JFXDatePicker fx:id="cjfecha" GridPane.columnSpan="2" GridPane.rowIndex="16" />
+                           </children>
+                        </GridPane>
+                        <GridPane prefHeight="761.0" prefWidth="299.0" vgap="10.0" HBox.hgrow="ALWAYS">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <TableView fx:id="tablaUno" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="colPosicion" prefWidth="75.0" text="POSICION" />
+                                  <TableColumn fx:id="colTension" prefWidth="75.0" text="TENSION" />
+                                    <TableColumn fx:id="colFaseU" prefWidth="75.0" text="FASEU" />
+                                    <TableColumn fx:id="colFaseV" prefWidth="75.0" text="FASE V" />
+                                    <TableColumn fx:id="colFaseW" prefWidth="75.0" text="FASE W" />
+                                </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                              <TableView fx:id="tablaDos" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                <columns>
+                                  <TableColumn fx:id="colNominal" prefWidth="75.0" text="NOMINAL" />
+                                  <TableColumn fx:id="colMinima" prefWidth="75.0" text="MINIMA" />
+                                    <TableColumn fx:id="colMaxima" prefWidth="75.0" text="MAXIMA" />
+                                </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                           </children>
+                        </GridPane>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </HBox>
+               </center>
+               <bottom>
+                  <HBox prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label fx:id="lblInfo" text="Label" />
+                     </children>
+                  </HBox>
+               </bottom>
+            </BorderPane>
+         </children>
+         <stylesheets>
+             <URL value="@protocolo.css" />
+         </stylesheets>
+      </VBox>
+   </children>
+</StackPane>

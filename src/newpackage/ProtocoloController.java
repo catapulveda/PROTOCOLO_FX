@@ -5,7 +5,6 @@ import clases.Metodos;
 import static clases.Metodos.getDouble;
 import clases.DatosTablaDos;
 import clases.DatosTablaUno;
-import clases.DoubleCell;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -21,11 +20,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import static clases.Metodos.getInteger;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXTabPane;
 import com.sun.rowset.CachedRowSetImpl;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +41,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -42,26 +49,35 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableCell;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TablePosition;
-import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.util.Callback;
-import javafx.util.converter.NumberStringConverter;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class ProtocoloController implements Initializable {
 
     DecimalFormat df = new DecimalFormat(".000");
     private ObservableList<DatosTablaUno> listaDatosTablaUno = FXCollections.observableArrayList();
-    StringProperty ESTADO_TRAFO = new SimpleStringProperty("Servicio");
+    StringProperty ESTADO_TRAFO = new SimpleStringProperty("Servicio:");
     
     @FXML
-    private StackPane rootPane;
+    private VBox rootPane;
     @FXML
-    private BorderPane contenedor;
+    private JFXTabPane tabPane;
+    @FXML
+    private BorderPane contenedorDatos;
     @FXML
     private JFXTextField cjprotocolo;
     @FXML
@@ -233,9 +249,9 @@ public class ProtocoloController implements Initializable {
     @FXML
     private TableColumn<DatosTablaUno, Double> colFaseU;
     @FXML
-    private TableColumn<DatosTablaUno, Number> colFaseV;
+    private TableColumn<DatosTablaUno, Double> colFaseV;
     @FXML
-    private TableColumn<DatosTablaUno, Number> colFaseW;
+    private TableColumn<DatosTablaUno, Double> colFaseW;
     @FXML
     private TableColumn<DatosTablaDos, Double> colNominal;
     @FXML
@@ -261,10 +277,32 @@ public class ProtocoloController implements Initializable {
             
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+                      
+        try {
+            Tab tabProtocolos = new Tab("Protocolos");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ListaProtocolos.fxml"));
+            AnchorPane ap3 = loader.load();
+            tabProtocolos.setContent(ap3);
+            ListaProtocolosController lpc = loader.getController();
+            lpc.setPc(this);
+            tabPane.getTabs().add(tabProtocolos);
+            
+            Tab tabTablasMonofasicos = new Tab("Tablas Monofásicos");
+            AnchorPane ap = new FXMLLoader(getClass().getResource("TablasMonofasicos.fxml")).load();
+            tabTablasMonofasicos.setContent(ap);
+            tabPane.getTabs().add(tabTablasMonofasicos);
+            
+            Tab tabTablasTrifasicos = new Tab("Tablas Trifásicos");
+            AnchorPane ap2 = new FXMLLoader(getClass().getResource("TablasTrifasicos.fxml")).load();
+            tabTablasTrifasicos.setContent(ap2);
+            tabPane.getTabs().add(tabTablasTrifasicos);                        
+        } catch (IOException ex) {
+            Logger.getLogger(ProtocoloController.class.getName()).log(Level.SEVERE, null, ex);
+        }        
         
         menuCalcular.setOnAction(event->{
             btnCalcular.fire();
-        });        
+        });
         
         comboFases.getItems().addAll(1,3);
         comboFases.getSelectionModel().selectFirst();
@@ -315,7 +353,7 @@ public class ProtocoloController implements Initializable {
         
         comboMaterialBaja.getItems().addAll("COBRE","ALUMINIO");
         comboMaterialBaja.getSelectionModel().selectFirst();
-        clases.Metodos.fontComboBox(comboMaterialBaja);        
+        clases.Metodos.fontComboBox(comboMaterialBaja);                
         
         tablaUno.setOnKeyPressed(event -> {
             if (event.getCode().isDigitKey() || event.getCode() == KeyCode.BACK_SPACE) {
@@ -330,7 +368,7 @@ public class ProtocoloController implements Initializable {
                     tablaUno.getSelectionModel().select(0, tablaUno.getVisibleLeafColumn(tablaUno.getVisibleLeafIndex(tp.getTableColumn())+1));
                 }else{
                     tablaUno.getSelectionModel().selectBelowCell();
-                }                
+                }     
                 event.consume();
             }else if (event.getCode() == KeyCode.LEFT) {
                 if (tablaUno.getSelectionModel().isCellSelectionEnabled()) {
@@ -351,6 +389,13 @@ public class ProtocoloController implements Initializable {
                 event.consume();
             }
         });
+        
+        tablaUno.setOnMouseClicked(evt->{
+            if(evt.getClickCount()==2 && evt.getButton()==MouseButton.PRIMARY){
+                System.out.println(evt.getSource());
+            }
+        });        
+        
         tablaUno.setEditable(true);
         tablaUno.getSelectionModel().setCellSelectionEnabled(true);
         tablaUno.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -365,7 +410,7 @@ public class ProtocoloController implements Initializable {
         
         colFaseU.setEditable(true);
         colFaseU.setCellValueFactory(new PropertyValueFactory<>("faseu"));
-        colFaseU.setCellFactory(tc->new DoubleCell(tablaDos));
+        colFaseU.setCellFactory(tc -> new clases.Celda(new clases.MyDoubleStringConverter(), tablaDos));
         //colFaseU.setCellFactory(EditCell.<DatosTablaUno, Double>forTableColumn(new MyDoubleStringConverter()));        
 //        colFaseU.setOnEditCommit(event->{
 //            ( (DatosTablaUno) event.getTableView().getItems().get(event.getTablePosition().getRow()) ).setFaseu(event.getNewValue());
@@ -373,22 +418,50 @@ public class ProtocoloController implements Initializable {
         
         colFaseV.setEditable(true);
         colFaseV.setCellValueFactory(new PropertyValueFactory<>("fasev"));
-        colFaseV.setCellFactory(tc->new DoubleCell(tablaDos));        
+        colFaseV.setCellFactory(tc -> new clases.Celda(new clases.MyDoubleStringConverter(), tablaDos));
         
         colFaseW.setEditable(true);
         colFaseW.setCellValueFactory(new PropertyValueFactory<>("fasew"));
-        colFaseW.setCellFactory(tc->new DoubleCell(tablaDos));        
+        colFaseW.setCellFactory(tc -> new clases.Celda(new clases.MyDoubleStringConverter(), tablaDos));
         
         /***CONFIGURAR TABLS DOS DE LAS NOMINALES***/
         colNominal.setCellValueFactory(new PropertyValueFactory<>("nominal"));        
         colMinima.setCellValueFactory(new PropertyValueFactory<>("minima"));
-        colMaxima.setCellValueFactory(new PropertyValueFactory<>("maxima"));
+        colMaxima.setCellValueFactory(new PropertyValueFactory<>("maxima"));             
         
         UpDown(cjprotocolo, cjserie, cjprotocolo);
         UpDown(cjserie, cjempresa, cjprotocolo);
         UpDown(cjempresa, cjmarca, cjserie);
         UpDown(cjmarca, cjkva, cjempresa);                
         
+        cjkva.setOnAction(event->{
+            calcular(null);
+        });
+        cjano.setOnAction(event->{
+            calcular(null);
+        });
+        cjvp.setOnAction(event->{
+            calcular(null);
+        });
+        cjvs.setOnAction(event->{
+            calcular(null);
+        });
+        cjtemperaturadeprueba.setOnAction(event->{
+            calcular(null);
+        });
+        cjpomedido.setOnAction(event->{
+            calcular(null);
+        });
+        cjvcc.setOnAction(event->{
+            calcular(null);
+        });
+        cjpccmedido.setOnAction(event->{
+            calcular(null);
+        });
+        comboConmutador.setOnAction(event->{
+            calcular(null);
+        });
+                
         Metodos.onlyDouble(cjkva, comboFases, cjmarca);
         comboFases.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){cjano.requestFocus();}});
         Metodos.onlyInteger(cjano, cjvp, cjkva);
@@ -467,8 +540,10 @@ public class ProtocoloController implements Initializable {
         cjcliente.setOnKeyPressed((evt)->{if(evt.getCode()==KeyCode.ENTER){cjobservaciones.requestFocus();}});                
         
         /*COPIAR AUTOMATICAMENTE EL VALOR DEL VOLTAJE SECUNDARIO EN LOS CAMPOS*/
-        cjvs.textProperty().bindBidirectional(cjtensionBT.textProperty());
-        cjvs.textProperty().bindBidirectional(cjtensionBT2.textProperty());
+        cjvs.textProperty().addListener((event, old, neww)->{
+            cjtensionBT.setText(String.valueOf(Integer.parseInt(neww)*2));
+            cjtensionBT2.setText(neww);
+        });        
             
         /*HABILITAR CAMPOS SEGUN LA FASE DEL TRANSFORMADOR*/
         cjVW.editableProperty().bind(comboFases.valueProperty().isEqualTo(3));
@@ -494,10 +569,11 @@ public class ProtocoloController implements Initializable {
                 break;
             }
         });
-                    
+        
+        
         lblServicio.textProperty().bind(ESTADO_TRAFO);
         comboServicio.getSelectionModel().selectedItemProperty().addListener( (op,old,val) ->{
-            if(val.equals("MANTENIMIENTO")){
+            if(val.equals("MANTENIMIENTO") && ESTADO_TRAFO.get().equals("Servicio:")){
                 ButtonType b1 = new ButtonType("ORIGINAL");
                 ButtonType b2 = new ButtonType("REPARADO");
                 Alert alert = new Alert(AlertType.CONFIRMATION, "SELECCIONE EL ESTADO DEL TRANSFORMADOR");
@@ -567,6 +643,17 @@ public class ProtocoloController implements Initializable {
         cjcalentamientodevanado.setText("65");
         cjespesor.setText("100");
         cjfecha.setValue(LocalDate.now());
+        
+        
+        cjUV.setOnAction(evt->{calcular(null);});
+        cjVW.setOnAction(evt->{calcular(null);});
+        cjWU.setOnAction(evt->{calcular(null);});
+        cjXY.setOnAction(evt->{calcular(null);});
+        cjYZ.setOnAction(evt->{calcular(null);});
+        cjZX.setOnAction(evt->{calcular(null);});
+        cjiu.setOnAction(evt->{calcular(null);});
+        cjiv.setOnAction(evt->{calcular(null);});
+        cjiw.setOnAction(evt->{calcular(null);});
     }
     
     
@@ -576,15 +663,19 @@ public class ProtocoloController implements Initializable {
         int pos = comboConmutador.getValue();
         if( (pos-1)>0 ){
             factor += (pos-1)*2.5/100;
-        }
-        tablaUno.getItems().clear();
-        for (int i = 1; i <= 5; i++) {
-            DatosTablaUno tu = new DatosTablaUno();
-            tu.setPosicion((i));
-            tu.setTension((int) Math.round(Integer.parseInt(cjvp.getText())*factor));
-            factor -= 0.025;
-            listaDatosTablaUno.add(tu);
         }        
+        for (int i = 1; i <= 5; i++) {
+            if(listaDatosTablaUno.size()==5){
+                listaDatosTablaUno.get((i-1)).setTension((int) Math.round(Integer.parseInt(cjvp.getText())*factor));                
+            }else{
+                DatosTablaUno tu = new DatosTablaUno();
+                tu.setPosicion((i));
+                tu.setTension((int) Math.round(Integer.parseInt(cjvp.getText())*factor));
+                listaDatosTablaUno.add(tu);
+            }
+            factor -= 0.025;
+        }
+        tablaUno.refresh();
     }
     
     void cargarTablaDos(ActionEvent evt){
@@ -592,13 +683,104 @@ public class ProtocoloController implements Initializable {
         if(vs==0)return;
         tablaDos.getItems().clear();
         tablaUno.getItems().forEach(i->{
-            double multiplicador = (comboConmutador.getValue()==1)?1:Math.sqrt(3);
+            double multiplicador = (comboFases.getValue()==1)?1:Math.sqrt(3);
             DatosTablaDos td = new DatosTablaDos();
             td.setNominal( Math.round( ((i.getTension()*multiplicador)/vs)*1000d )/1000d );
             td.setMinima(Math.round(((((i.getTension()*multiplicador)/vs)*0.995)*1000d))/1000d);
             td.setMaxima( Math.round( (((i.getTension()*multiplicador)/vs)*1.005)*1000d )/1000d );
             tablaDos.getItems().add(td);
         });
+    }        
+    
+    @FXML
+    private void guardar(ActionEvent evt){
+        Alert alerta = new Alert(AlertType.CONFIRMATION, "Desea continuar ?", ButtonType.YES, ButtonType.NO);
+        if(alerta.showAndWait().get()==ButtonType.YES){
+            
+            String sql = "INSERT INTO protocolo (\n" +
+"                          codigo, serie, empresa, marca, kva, fase, ano, vp, vs, servicio,\n" +
+"                          estadoservicio, frecuencia, refrigeracion, tensionserie, nba, caldev,\n" +
+"                          claseaislamiento, altdiseno, i1, i2, dervprim, temperatura, conmutador,\n" +
+"                          aceite, referenciaaceite, ruptura, metodo, tiemporesistencia, tensiondeprueba,\n" +
+"                          atcontrabt, atcontratierra, btcontratierra, grupodeconexion, polaridad,\n" +
+"                          uv, vw, wu, proresalta, materialalta, xy, yz, zx, proresbaja, materialbaja, btcontraatytierra,\n" +
+"                          atcontrabtytierra, tiempodeprueba, tensionbt, frecuencia2, tiempodeprueba2,\n" +
+"                          tensionbt2, iu, iv, iw,promedioi, iogarantizado, pomedido, pogarantizado,\n" +
+"                          vcc, pccmedido, pcca85, pccgarantizado, i2r, i2ra85, z, za85, zgarantizado, reg,\n" +
+"                          ef, masa, volumen, largo, ancho, alto, color, espesor, elementos, largoelemento,\n" +
+"                          anchoelemento, cliente, observaciones, fechadeprotocolo,\n" +
+"                          punou, punov, punow, pdosu, pdosv, pdosw, ptresu, ptresv, ptresw, pcuatrou,\n" +
+"                          pcuatrov, pcuatrow, pcincou, pcincov, pcincow)\n" +
+"                      VALUES (\n" +
+"                          '"+cjprotocolo.getText().trim()+"', '"+cjserie.getText().trim()+"',\n" +
+"                          '"+cjempresa.getText().trim()+"', '"+cjmarca.getText().trim()+"',\n" +
+"                          '"+cjkva.getText().trim()+"', '"+comboFases.getValue()+"',\n" +
+"                          '"+cjano.getText().trim()+"', '"+cjvp.getText().trim()+"',\n" +
+"                          '"+cjvs.getText().trim()+"', '"+comboServicio.getValue()+"',\n" +
+"                          '"+ESTADO_TRAFO.get()+"', '"+cjfrecuencia.getText().trim()+"',\n" +
+"                          '"+comboRefrigeracion.getValue()+"', '"+cjtensionserie.getText().trim()+"',\n" +
+"                          '"+cjnba.getText().trim()+"', '"+cjcalentamientodevanado.getText().trim()+"',\n" +
+"                          '"+comboClaseAislamiento.getValue()+"', '"+cjalturadiseno.getText().trim()+"',\n" +
+"                          '"+cji1.getText().trim()+"', '"+cji2.getText().trim()+"',\n" +
+"                          '"+comboDerivacion.getValue()+"', '"+cjtemperaturadeprueba.getText().trim()+"',\n" +
+"                          '"+comboConmutador.getValue()+"', '"+comboAceite.getValue()+"',\n" +
+"                          '"+comboReferencia.getValue()+"', '"+cjruptura.getText().trim()+"',\n" +
+"                          '"+cjmetodo.getText().trim()+"', '"+cjtiemporesistencia.getText().trim()+"',\n" +
+"                          '"+comboTensiondeprueba.getValue()+"', '"+cjATcontraBT.getText().trim()+"',\n" +
+"                          '"+cjATcontraTierra.getText().trim()+"', '"+cjBTcontraTierra.getText().trim()+"',\n" +
+"                          '"+comboConexion.getValue()+"', '"+comboPolaridad.getValue()+"',\n" +
+"                          '"+cjUV.getText().trim()+"', '"+cjVW.getText().trim()+"',\n" +
+"                          '"+cjWU.getText().trim()+"', '"+cjproresalta.getText().trim()+"',\n" +
+"                          '"+comboMaterialAlta.getValue()+"', '"+cjXY.getText().trim()+"',\n" +
+"                          '"+cjYZ.getText().trim()+"', '"+cjZX.getText().trim()+"',\n" +
+"                          '"+cjproresbaja.getText().trim()+"', '"+comboMaterialBaja.getValue()+"',\n" +
+"                          '"+cjBTcontraATyTierra.getText().trim()+"', '"+cjATcontraBTyTierra.getText().trim()+"',\n" +
+"                          '"+cjtiempoaplicado.getText().trim()+"', '"+cjtensionBT.getText().trim()+"',\n" +
+"                          '"+cjFrecuenciaInducida.getText().trim()+"', '"+cjtiempoInducido.getText().trim()+"',\n" +
+"                          '"+cjtensionBT2.getText().trim()+"', '"+cjiu.getText().trim()+"',\n" +
+"                          '"+cjiv.getText().trim()+"', '"+cjiw.getText().trim()+"iw',\n" +
+"                          '"+cjpromedioi.getText().trim()+"', '"+cjiogarantizado.getText().trim()+"',\n" +
+"                          '"+cjpomedido.getText().trim()+"', '"+cjpogarantizado.getText().trim()+"',\n" +
+"                          '"+cjvcc.getText().trim()+"', '"+cjpccmedido.getText().trim()+"',\n" +
+"                          '"+cjpcca85.getText().trim()+"', '"+cjpccgarantizado.getText().trim()+"',\n" +
+"                          '"+cji2r.getText().trim()+"', '"+cji2ra85.getText().trim()+"',\n" +
+"                          '"+cjz.getText().trim()+"', '"+cjza85.getText().trim()+"',\n" +
+"                          '"+cjzgarantizado.getText().trim()+"', '"+cjregulacion.getText().trim()+"',\n" +
+"                          '"+cjeficiencia.getText().trim()+"', '"+cjmasa.getText().trim()+"',\n" +
+"                          '"+cjaceite.getText().trim()+"', '"+cjlargo.getText().trim()+"',\n" +
+"                          '"+cjancho.getText().trim()+"', '"+cjalto.getText().trim()+"',\n" +
+"                          '"+cjcolor.getText().trim()+"', '"+cjespesor.getText().trim()+"',\n" +
+"                          '"+cjelementos.getText().trim()+"', '"+cjlargoelemento.getText().trim()+"',\n" +
+"                          '"+cjanchoelemento.getText().trim()+"', '"+cjcliente.getText().trim()+"',\n" +
+"                          '"+cjobservaciones.getText().trim()+"', '"+cjfecha.getValue()+"',\n" +
+"                          '"+listaDatosTablaUno.get(0).getFaseu()+"', '"+listaDatosTablaUno.get(0).getFasev()+"',\n" +
+"                          '"+listaDatosTablaUno.get(0).getFasew()+"', '"+listaDatosTablaUno.get(1).getFaseu()+"',\n" +
+"                          '"+listaDatosTablaUno.get(1).getFasev()+"', '"+listaDatosTablaUno.get(1).getFasew()+"',\n" +
+"                          '"+listaDatosTablaUno.get(2).getFaseu()+"', '"+listaDatosTablaUno.get(2).getFasev()+"',\n" +
+"                          '"+listaDatosTablaUno.get(2).getFasew()+"', '"+listaDatosTablaUno.get(3).getFaseu()+"',\n" +
+"                          '"+listaDatosTablaUno.get(3).getFasev()+"', '"+listaDatosTablaUno.get(3).getFasew()+"',\n" +
+"                          '"+listaDatosTablaUno.get(4).getFaseu()+"', '"+listaDatosTablaUno.get(4).getFasev()+"',\n" +
+"                          '"+listaDatosTablaUno.get(4).getFasew()+"'\n" +
+"                      );";
+
+            clases.Conexion con = new Conexion();            
+            try {
+                PreparedStatement pst = con.getCon().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                if(pst.executeUpdate()>0){
+                    ResultSet rs = pst.getGeneratedKeys();
+                    rs.next();
+                    JasperReport reporte = (JasperReport) JRLoader.loadObject(new URL(this.getClass().getResource("PROTOCOLO.jasper").toString()));         
+                    Map<String, Object> p = new HashMap<>();
+                    p.put("IDPROTOCOLO", rs.getInt(1));
+                    JasperPrint jasperprint = JasperFillManager.fillReport(reporte, p, con.getCon());
+                    JasperViewer.viewReport(jasperprint, false);
+                }
+            } catch (MalformedURLException | SQLException | JRException ex) {
+                Logger.getLogger(ProtocoloController.class.getName()).log(Level.SEVERE, null, ex);
+            }finally{
+                con.cerrar();
+            }
+        }   
     }
     
     @FXML
@@ -621,20 +803,26 @@ public class ProtocoloController implements Initializable {
                    TABLA = null,
                    MSG_ERROR = "";
 
+            if(KVA==0){
+//                MSG_ERROR = "INGRESE EL VOLTAJE DE ALTA TENSIÓN\n";
+                clases.Metodos.rotarError(cjkva);
+                return;
+            }
             if(vp==0){
-                MSG_ERROR = "INGRESE EL VOLTAJE DE ALTA TENSIÓN\n";
+//                MSG_ERROR = "INGRESE EL VOLTAJE DE ALTA TENSIÓN\n";
+                clases.Metodos.rotarError(cjvp);
             }        
             if(vs == 0){
-                MSG_ERROR += "INGRESE EL VOLTAJE DE BAJA TENSIÓN\n";
-            }
-            cargarTablaUno(evt);
-            cargarTablaDos(evt);
+//                MSG_ERROR += "INGRESE EL VOLTAJE DE BAJA TENSIÓN\n";
+                clases.Metodos.rotarError(cjvs);
+            }            
             if(ano == 0){
-                MSG_ERROR += "INGRESE EL AÑO\n";
+//                MSG_ERROR += "INGRESE EL AÑO\n";
+                clases.Metodos.rotarError(cjano);
             }
-            if(temperatura==0){
-                System.out.println("TEMPERTURAAA");
-                MSG_ERROR += "INGRESE LA TEMPERATURA DE PRUEBA\n";
+            if(temperatura==0){                
+//                MSG_ERROR += "INGRESE LA TEMPERATURA DE PRUEBA\n";
+                clases.Metodos.rotarError(cjtemperaturadeprueba);
             }
 
             if(ACEITE.equals("SECO")){
@@ -679,29 +867,41 @@ public class ProtocoloController implements Initializable {
                 return;
             }                        
 
+            cargarTablaDos(evt);
+            cargarTablaUno(evt);
+            cargarTablaDos(evt);
+            
             Conexion con = new Conexion();
             ResultSet crs = null;
             CachedRowSetImpl rs = null;
             try {
-                crs = con.getCon().createStatement().executeQuery("SELECT * FROM "+TABLA+" ORDER BY kva ASC");
+                String query = "SELECT * FROM "+TABLA+" ORDER BY kva ASC";
+                System.out.println("Buscando KVA -> "+query);
+                crs = con.getCon().createStatement().executeQuery(query);
                 rs = new CachedRowSetImpl();
                 rs.populate(crs);
                 double anterior = 0;
+                boolean esta = false;
                 while(rs.next()){
                     System.out.println("VOY EN "+rs.getDouble("kva"));
                     if(rs.getDouble("kva")==KVA){
-                        break;
+                        esta = true;break;
                     }else if( rs.getDouble("kva") < KVA ){                    
                         anterior = rs.getDouble("kva");
                     }else if( KVA < ((anterior+rs.getDouble("kva"))/2) ){                        
-                        rs.previous();
+                        rs.previous();esta = true;
                         break;
                     }else{
-                        break;
+                        esta = true;break;
                     }
                 }
-
-                lblInfo.setText("Valores de la tabla "+TABLA+" con KVA "+rs.getDouble("kva"));
+                if(!esta){
+                    alert.setContentText("NO SE ENCONTRÓ EL KVA EN LAS TABLAS DE VALORES");
+                    alert.show();                
+                    lblInfo.setText("NO SE ENCONTRÓ EL KVA EN LAS TABLAS DE VALORES");
+                    return;
+                }
+                lblInfo.setText("Valores de la tabla "+TABLA+" con KVA "+rs.getDouble("kva"));                
                 cjiogarantizado.setText(String.valueOf(rs.getDouble("io")));
                 cjpogarantizado.setText(String.valueOf(rs.getDouble("po")));
                 cjzgarantizado.setText(String.valueOf(rs.getDouble("uz")));
@@ -735,7 +935,7 @@ public class ProtocoloController implements Initializable {
                         break;
                 }
             } catch (SQLException ex) {
-                alert.setContentText("ERROR AL TRAER LOS VALORES GARANTIZADOS DESDE LA BASE DE DATOS\n"+ex);
+                alert.setContentText("ERROR AL TRAER LOS VALORES GARANTIZADOS DESDE LAS TABLAS\n"+ex);
                 alert.show();
                 Logger.getLogger(ProtocoloController.class.getName()).log(Level.SEVERE, null, ex);                
             }finally{
@@ -774,10 +974,11 @@ public class ProtocoloController implements Initializable {
             
             double POMEDIDO = getDouble(cjpomedido);
             if(POMEDIDO<=0){
-                alert.setContentText("Ingrese el valor de las Po Medidas(W)");
-                cjpomedido.requestFocus();
-                alert.show();
-                return;
+//                alert.setContentText("Ingrese el valor de las Po Medidas(W)");
+//                cjpomedido.requestFocus();
+//                alert.show();
+//                return;
+                clases.Metodos.rotarError(cjpomedido);
             }
             
             double I2R = (fase==1)?((Math.pow(i1, 2) * proresalta) + (Math.pow(i2, 2) * (proresbaja / 1000))):
@@ -789,15 +990,18 @@ public class ProtocoloController implements Initializable {
             
             double PCUMEDIDO = getDouble(cjpccmedido), VCC = getDouble(cjvcc);
             if(PCUMEDIDO<=0){
-                alert.setContentText("Ingrese el valor de las Pcc Medidas(W)");
-                alert.show();
-                return;
+//                alert.setContentText("Ingrese el valor de las Pcc Medidas(W)");
+//                alert.show();
+//                return;
+                clases.Metodos.rotarError(cjpccmedido);
             }
-            if(VCC<=0){
-                alert.setContentText("Ingrese el valor del voltaje de corto circuito");
-                alert.show();
-                return;
-            }
+
+//            if(VCC<=0){
+//                alert.setContentText("Ingrese el valor del voltaje de corto circuito");
+//                alert.show();
+//                return;
+//            }
+
             double R = PCUMEDIDO / (10*KVA);
             double R85 = R * K;
             
@@ -818,34 +1022,81 @@ public class ProtocoloController implements Initializable {
             double PCU85 = ((PCUMEDIDO - I2R) / K) + I2R85;
             cjpcca85.setText(""+Math.round(PCU85*100d)/100d);
             
-            double EF = (0.8 * KVA * Math.pow(10, 5)) / (0.8 * KVA * Math.pow(10, 3) + POMEDIDO + PCU85);                        
+            double EF = (0.8 * KVA * Math.pow(10, 5)) / (0.8 * KVA * Math.pow(10, 3) + POMEDIDO + PCU85);
+            cjeficiencia.setText(""+Math.round(EF*100d)/100d);
         });
                 
     }
     
-    public void UpDown(Node n1, Node n2, Node n3){
-        n1.setOnKeyPressed((evt)->{            
-            if(evt.getCode()==KeyCode.ENTER||evt.getCode()==KeyCode.DOWN){
-                n2.requestFocus();
-            }else if(evt.getCode()==KeyCode.UP){
-                n3.requestFocus();
+    private void UpDown(Node n1, Node n2, Node n3){
+        n1.setOnKeyPressed((evt)->{
+            if(null!=evt.getCode())switch (evt.getCode()) {
+                case ENTER:
+                    n2.requestFocus();
+                    break;
+                case DOWN:
+                    n2.requestFocus();
+                    break;
+                case UP:
+                    n3.requestFocus();
+                    break;
+                default:
+                    break;
             }
         }); 
     }
     
-    private Callback<TableColumn<DatosTablaUno, Number>, TableCell<DatosTablaUno, Number>> createNumberCellFactory() {
-        Callback<TableColumn<DatosTablaUno, Number>, TableCell<DatosTablaUno, Number>> factory = TextFieldTableCell.forTableColumn(new NumberStringConverter(){
-            @Override
-            public Number fromString(String string) {
-                return Double.parseDouble(string.replace(",", "."));
+    public void abrirProtocolo(int idprotocolo){
+        try {
+            Conexion con = new Conexion();
+            String sql = "SELECT * FROM protocolo WHERE idprotocolo="+idprotocolo;
+            Statement st = con.getCon().createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            if(rs.next()){
+                M(cjprotocolo, "codigo", rs);
+                M(cjserie, "serie", rs);
+                M(cjempresa, "empresa", rs);
+                M(cjmarca, "marca", rs);
+                M(cjkva, "kva", rs);
+                M(comboFases, "fase", rs);
+                M(cjano, "ano", rs);
+                M(cjvp, "vp", rs);
+                M(cjvs, "vs", rs);                
+                ESTADO_TRAFO.set("Servicio:("+rs.getString("estadoservicio")+")");
+                System.out.println("ESTADO ES: "+ESTADO_TRAFO.get());
+                M(comboServicio, "servicio", rs);
+                M(cjfrecuencia, "frecuencia", rs);
+                M(comboRefrigeracion, "refrigeracion", rs);
+                M(cjtensionserie, "tensionserie", rs);
+                M(cjnba, "nba", rs);
+                M(cjcalentamientodevanado, "caldev", rs);
+//"                          claseaislamiento, altdiseno, i1, i2, dervprim, temperatura, conmutador,\n" +
+//"                          aceite, referenciaaceite, ruptura, metodo, tiemporesistencia, tensiondeprueba,\n" +
+//"                          atcontrabt, atcontratierra, btcontratierra, grupodeconexion, polaridad,\n" +
+//"                          uv, vw, wu, proresalta, materialalta, xy, yz, zx, proresbaja, materialbaja, btcontraatytierra,\n" +
+//"                          atcontrabtytierra, tiempodeprueba, tensionbt, frecuencia2, tiempodeprueba2,\n" +
+//"                          tensionbt2, iu, iv, iw,promedioi, iogarantizado, pomedido, pogarantizado,\n" +
+//"                          vcc, pccmedido, pcca85, pccgarantizado, i2r, i2ra85, z, za85, zgarantizado, reg,\n" +
+//"                          ef, masa, volumen, largo, ancho, alto, color, espesor, elementos, largoelemento,\n" +
+//"                          anchoelemento, cliente, observaciones, fechadeprotocolo,\n" +
+//"                          punou, punov, punow, pdosu, pdosv, pdosw, ptresu, ptresv, ptresw, pcuatrou,\n" +
+//"                          pcuatrov, pcuatrow, pcincou, pcincov, pcincow
+                tabPane.getSelectionModel().selectFirst();
             }
-
-            @Override
-            public String toString(Number object) {                
-                return df.format(object);
-            }
-        });
-        return factory;
+        } catch (SQLException ex) {
+            Logger.getLogger(ProtocoloController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
+    private void M(Node node, String str, ResultSet rs) throws SQLException{
+        if(node instanceof TextField){
+            ((TextField)node).setText(rs.getString(str));
+        }else if(node instanceof ComboBox){
+            ((ComboBox)node).getSelectionModel().select(rs.getObject(str));
+        }
+    }
+    
+    public void showTabPane(int index){
+        this.tabPane.getSelectionModel().select(index);
+    }
 }

@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -13,9 +14,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Protocolo.fxml"));
-            StackPane root = (StackPane) loader.load();
-//            AnchorPane root = (AnchorPane) loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML.fxml"));
+            VBox root = (VBox) loader.load();
             Scene scene = new Scene(root);
             scene.getStylesheets().add("newpackage/protocolo.css");
             primaryStage.setTitle("CDM");

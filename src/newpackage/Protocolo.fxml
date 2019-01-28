@@ -68,7 +68,7 @@
                            </font>
                         </JFXButton>
                         <Separator maxWidth="1.7976931348623157E308" />
-                        <JFXButton fx:id="btnGuardar" buttonType="RAISED" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" onAction="#calcular" ripplerFill="#0e4894">
+                        <JFXButton fx:id="btnGuardar" buttonType="RAISED" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" onAction="#guardar" ripplerFill="#0e4894">
                            <graphic>
                               <FontIcon iconColor="#467bc5" iconLiteral="fa-save" iconSize="24" />
                            </graphic>
@@ -146,11 +146,11 @@
                               <JFXTextField fx:id="cjserie" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <JFXTextField fx:id="cjempresa" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <JFXTextField fx:id="cjmarca" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <JFXTextField fx:id="cjkva" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <JFXTextField fx:id="cjkva" alignment="CENTER" text="30" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <ComboBox fx:id="comboFases" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <JFXTextField fx:id="cjano" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <JFXTextField fx:id="cjvp" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                              <JFXTextField fx:id="cjvs" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <JFXTextField fx:id="cjano" alignment="CENTER" text="2014" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <JFXTextField fx:id="cjvp" alignment="CENTER" text="13200" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <JFXTextField fx:id="cjvs" alignment="CENTER" text="240" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                               <ComboBox fx:id="comboServicio" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                               <JFXTextField fx:id="cjfrecuencia" alignment="CENTER" text="60" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                               <JFXTextField fx:id="cjtensionserie" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="12" />
@@ -354,12 +354,12 @@
                               <Label text="Z Garantizado:" GridPane.halignment="RIGHT" GridPane.rowIndex="25" />
                               <JFXTextField fx:id="cjvcc" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="17" />
                               <JFXTextField fx:id="cjpccmedido" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="18" />
-                              <JFXTextField fx:id="cjpcca85" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="19" />
-                              <JFXTextField fx:id="cjpccgarantizado" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="20" />
+                              <JFXTextField fx:id="cjpcca85" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="19" />
+                              <JFXTextField fx:id="cjpccgarantizado" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="20" />
                               <JFXTextField fx:id="cji2r" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="21" />
-                              <JFXTextField fx:id="cji2ra85" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="22" />
-                              <JFXTextField fx:id="cjz" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="23" />
-                              <JFXTextField fx:id="cjza85" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="24" />
+                              <JFXTextField fx:id="cji2ra85" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="22" />
+                              <JFXTextField fx:id="cjz" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="23" />
+                              <JFXTextField fx:id="cjza85" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="24" />
                               <JFXTextField fx:id="cjzgarantizado" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="25" />
                            </children>
                         </GridPane>
@@ -425,8 +425,8 @@
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <JFXTextField fx:id="cjregulacion" alignment="CENTER" GridPane.columnIndex="1" />
-                              <JFXTextField fx:id="cjeficiencia" alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <JFXTextField fx:id="cjregulacion" alignment="CENTER" editable="false" GridPane.columnIndex="1" />
+                              <JFXTextField fx:id="cjeficiencia" alignment="CENTER" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label text="OBSERVACIONES" underline="true" GridPane.columnSpan="2" GridPane.rowIndex="17">
                                  <font>
                                     <Font name="System Bold" size="12.0" />

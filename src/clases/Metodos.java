@@ -51,7 +51,7 @@ public class Metodos {
         txt.setTextFormatter(new TextFormatter<Double>(new StringConverter<Double>(){
             @Override
             public String toString(Double object) {
-                System.out.println("setTextFormatter object es "+object);
+//                System.out.println("setTextFormatter object es "+object);
                 if(object==null)
                     return "0";
                 
@@ -84,7 +84,7 @@ public class Metodos {
             @Override
             public String toString(Integer object) {
                 if(object==null)
-                    return "";
+                    return "0";
                 
                 return object.toString();
             }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="newpackage.ListaProtocolosController">
+   <children>
+      <TableView fx:id="tabla" editable="true" layoutX="62.0" layoutY="52.0" onMouseClicked="#abrirProtocolo" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columns>
+          <TableColumn fx:id="colCliente" prefWidth="75.0" text="CLIENTE" />
+          <TableColumn fx:id="colSerie" prefWidth="75.0" text="SERIE" />
+            <TableColumn fx:id="colKva" prefWidth="75.0" text="KVA" />
+            <TableColumn fx:id="coltension" prefWidth="75.0" text="TENSION" />
+            <TableColumn fx:id="colMarca" prefWidth="75.0" text="MARCA" />
+            <TableColumn fx:id="colServicio" prefWidth="75.0" text="SERVICIO" />
+            <TableColumn fx:id="colFecha" prefWidth="75.0" text="FECHA" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
