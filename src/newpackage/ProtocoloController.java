@@ -36,6 +36,8 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -56,9 +58,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javax.swing.JOptionPane;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -70,7 +72,8 @@ public class ProtocoloController implements Initializable {
 
     DecimalFormat df = new DecimalFormat(".000");
     private ObservableList<DatosTablaUno> listaDatosTablaUno = FXCollections.observableArrayList();
-    StringProperty ESTADO_TRAFO = new SimpleStringProperty("Servicio:");
+    private final StringProperty ESTADO_TRAFO = new SimpleStringProperty("Servicio:");       
+    private final BooleanProperty ACTUALIZANDO = new SimpleBooleanProperty(false);      
     
     @FXML
     private VBox rootPane;
@@ -573,27 +576,30 @@ public class ProtocoloController implements Initializable {
         
         lblServicio.textProperty().bind(ESTADO_TRAFO);
         comboServicio.getSelectionModel().selectedItemProperty().addListener( (op,old,val) ->{
-            if(val.equals("MANTENIMIENTO") && ESTADO_TRAFO.get().equals("Servicio:")){
-                ButtonType b1 = new ButtonType("ORIGINAL");
-                ButtonType b2 = new ButtonType("REPARADO");
-                Alert alert = new Alert(AlertType.CONFIRMATION, "SELECCIONE EL ESTADO DEL TRANSFORMADOR");
-                alert.getButtonTypes().clear();
-                alert.getButtonTypes().addAll(b1,b2, ButtonType.CLOSE);
-                alert.setTitle("Seleccione...");
-                while(true){
-                    Optional<ButtonType> result = alert.showAndWait();
-                    if(result.get()==b1){                        
-                        ESTADO_TRAFO.set("Servicio:("+b1.getText()+")");
-                        break;
-                    }else if(result.get()==b2){
-                        ESTADO_TRAFO.set("Servicio:("+b2.getText()+")");
-                        break;
-                    }else if(result.get()==ButtonType.CLOSE){
-                        ESTADO_TRAFO.set("Servicio:");
-                        comboServicio.getSelectionModel().selectFirst();
-                        break;
+            if(val.equals("MANTENIMIENTO")){
+                if(ESTADO_TRAFO.get().equals("Servicio:")){
+                    ButtonType b1 = new ButtonType("ORIGINAL");
+                    ButtonType b2 = new ButtonType("REPARADO");
+                    Alert alert = new Alert(AlertType.CONFIRMATION, "SELECCIONE EL ESTADO DEL TRANSFORMADOR");
+                    alert.getButtonTypes().clear();
+                    alert.getButtonTypes().addAll(b1,b2, ButtonType.CLOSE);
+                    alert.setTitle("Seleccione...");
+                    while(true){
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if(result.get()==b1){
+                            setESTADO_TRAFO("Servicio:("+b1.getText()+")");                        
+                            break;
+                        }else if(result.get()==b2){
+                            setESTADO_TRAFO("Servicio:("+b2.getText()+")");
+                            ESTADO_TRAFO.set("Servicio:("+b2.getText()+")");
+                            break;
+                        }else if(result.get()==ButtonType.CLOSE){
+                            setESTADO_TRAFO("Servicio:");
+                            comboServicio.getSelectionModel().selectFirst();
+                            break;
+                        }
                     }
-                }                
+                }                                
             }else{
                 ESTADO_TRAFO.set("Servicio:");
             }
@@ -784,8 +790,8 @@ public class ProtocoloController implements Initializable {
     }
     
     @FXML
-    void calcular(ActionEvent evt){
-        
+    void calcular(ActionEvent evt){ 
+        JOptionPane.showMessageDialog(null, "CALCULANDO");
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Faltan Datos");
@@ -1053,32 +1059,89 @@ public class ProtocoloController implements Initializable {
             Statement st = con.getCon().createStatement();
             ResultSet rs = st.executeQuery(sql);
             if(rs.next()){
+                setACTUALIZANDO(true);
                 M(cjprotocolo, "codigo", rs);
                 M(cjserie, "serie", rs);
                 M(cjempresa, "empresa", rs);
                 M(cjmarca, "marca", rs);
-                M(cjkva, "kva", rs);
+                M(cjkva, "kva", rs);                
                 M(comboFases, "fase", rs);
                 M(cjano, "ano", rs);
                 M(cjvp, "vp", rs);
-                M(cjvs, "vs", rs);                
-                ESTADO_TRAFO.set("Servicio:("+rs.getString("estadoservicio")+")");
-                System.out.println("ESTADO ES: "+ESTADO_TRAFO.get());
+                M(cjvs, "vs", rs);
+                setESTADO_TRAFO(rs.getString("estadoservicio"));
                 M(comboServicio, "servicio", rs);
                 M(cjfrecuencia, "frecuencia", rs);
                 M(comboRefrigeracion, "refrigeracion", rs);
-                M(cjtensionserie, "tensionserie", rs);
+                M(cjtensionserie, "tensionserie", rs);             
                 M(cjnba, "nba", rs);
                 M(cjcalentamientodevanado, "caldev", rs);
-//"                          claseaislamiento, altdiseno, i1, i2, dervprim, temperatura, conmutador,\n" +
-//"                          aceite, referenciaaceite, ruptura, metodo, tiemporesistencia, tensiondeprueba,\n" +
-//"                          atcontrabt, atcontratierra, btcontratierra, grupodeconexion, polaridad,\n" +
-//"                          uv, vw, wu, proresalta, materialalta, xy, yz, zx, proresbaja, materialbaja, btcontraatytierra,\n" +
-//"                          atcontrabtytierra, tiempodeprueba, tensionbt, frecuencia2, tiempodeprueba2,\n" +
-//"                          tensionbt2, iu, iv, iw,promedioi, iogarantizado, pomedido, pogarantizado,\n" +
-//"                          vcc, pccmedido, pcca85, pccgarantizado, i2r, i2ra85, z, za85, zgarantizado, reg,\n" +
-//"                          ef, masa, volumen, largo, ancho, alto, color, espesor, elementos, largoelemento,\n" +
-//"                          anchoelemento, cliente, observaciones, fechadeprotocolo,\n" +
+                M(comboClaseAislamiento, "claseaislamiento", rs);
+                M(cjalturadiseno, "altdiseno", rs);
+                M(cji1, "i1", rs);
+                M(cji2, "i2", rs);
+                M(comboDerivacion, "dervprim", rs);
+                M(cjtemperaturadeprueba, "temperatura", rs);
+                M(comboConmutador, "conmutador", rs);
+                M(comboAceite, "aceite", rs);
+                M(comboReferencia, "referenciaaceite", rs);
+                M(cjruptura, "ruptura", rs);
+                M(cjmetodo, "metodo", rs);
+                M(cjtiemporesistencia, "tiemporesistencia", rs);
+                M(comboTensiondeprueba, "tensiondeprueba", rs);
+                M(cjATcontraBT, "atcontrabt", rs);
+                M(cjATcontraTierra, "atcontratierra", rs);
+                M(cjBTcontraTierra, "btcontratierra", rs);
+                M(comboConexion, "grupodeconexion", rs);
+                M(comboPolaridad, "polaridad", rs);
+                M(cjUV, "uv", rs);
+                M(cjVW, "vw", rs);
+                M(cjWU, "wu", rs);                
+                M(cjproresalta, "proresalta", rs);
+                M(comboMaterialAlta, "materialalta", rs);
+                M(cjXY, "xy", rs);
+                M(cjYZ, "yz", rs);
+                M(cjZX, "zx", rs);                
+                M(cjproresbaja, "proresbaja", rs);
+                M(comboMaterialBaja, "materialbaja", rs);
+                M(cjBTcontraATyTierra, "btcontraatytierra", rs);
+                M(cjATcontraBTyTierra, "atcontrabtytierra", rs);
+                M(cjtiempoaplicado, "tiempodeprueba", rs);
+                M(cjtensionBT, "tensionbt", rs);
+                M(cjFrecuenciaInducida, "frecuencia2", rs);
+                M(cjtiempoInducido, "tiempodeprueba2", rs);
+                M(cjtensionBT2, "tensionbt2", rs);
+                M(cjiu, "iu", rs);
+                M(cjiv, "iv", rs);
+                M(cjiw, "iw", rs);
+                M(cjpromedioi, "promedioi", rs);
+                M(cjiogarantizado, "iogarantizado", rs);
+                M(cjpomedido, "pomedido", rs);
+                M(cjpogarantizado, "pogarantizado", rs);
+                M(cjvcc, "vcc", rs);
+                M(cjpccmedido, "pccmedido", rs);
+                M(cjpcca85, "pcca85", rs);
+                M(cjpccgarantizado, "pccgarantizado", rs);
+                M(cji2r, "i2r", rs);
+                M(cji2ra85, "i2ra85", rs);
+                M(cjz, "z", rs);
+                M(cjza85, "za85", rs);
+                M(cjzgarantizado, "zgarantizado", rs);
+                M(cjregulacion, "reg", rs);
+                M(cjeficiencia, "ef", rs);
+                M(cjmasa, "masa", rs);
+                M(cjaceite, "volumen", rs);
+                M(cjlargo, "largo", rs);
+                M(cjancho, "ancho", rs);
+                M(cjalto, "alto", rs);
+                M(cjcolor, "color", rs);
+                M(cjespesor, "espesor", rs);
+                M(cjelementos, "elementos", rs);
+                M(cjlargoelemento, "largoelemento", rs);
+                M(cjanchoelemento, "anchoelemento", rs);
+                M(cjcliente, "cliente", rs);
+                M(cjobservaciones, "observaciones", rs);
+                cjfecha.setValue(LocalDate.parse(rs.getString("fechadeprotocolo")));
 //"                          punou, punov, punow, pdosu, pdosv, pdosw, ptresu, ptresv, ptresw, pcuatrou,\n" +
 //"                          pcuatrov, pcuatrow, pcincou, pcincov, pcincow
                 tabPane.getSelectionModel().selectFirst();
@@ -1098,5 +1161,29 @@ public class ProtocoloController implements Initializable {
     
     public void showTabPane(int index){
         this.tabPane.getSelectionModel().select(index);
+    }
+    
+    public String getESTADO_TRAFO() {
+        return ESTADO_TRAFO.get();
+    }
+
+    public void setESTADO_TRAFO(String value) {
+        ESTADO_TRAFO.set(value);
+    }
+
+    public StringProperty ESTADO_TRAFOProperty() {
+        return ESTADO_TRAFO;
+    }
+    
+    public boolean isACTUALIZANDO() {
+        return ACTUALIZANDO.get();
+    }
+
+    public void setACTUALIZANDO(boolean value) {
+        ACTUALIZANDO.set(value);
+    }
+
+    public BooleanProperty ACTUALIZANDOProperty() {
+        return ACTUALIZANDO;
     }
 }

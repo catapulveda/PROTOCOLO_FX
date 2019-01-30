@@ -89,8 +89,7 @@ public class ListaProtocolosController implements Initializable {
             p.setKva(rs.getDouble("kva"));
             p.setTension(rs.getString("vp")+" / "+rs.getString("vs"));
             p.setMarca(rs.getString("marca"));
-            p.setServicio(rs.getString("servicio"));
-            System.out.println(rs.getString("fechaderegistro"));
+            p.setServicio(rs.getString("servicio"));            
             p.setFecha(LocalDate.parse(rs.getString("fechaderegistro"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             
             tabla.getItems().add(p);
