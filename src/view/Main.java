@@ -1,11 +1,9 @@
-package newpackage;
+package view;
 
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -14,17 +12,17 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Protocolo.fxml"));
             VBox root = (VBox) loader.load();
             Scene scene = new Scene(root);
-            scene.getStylesheets().add("newpackage/protocolo.css");
+            scene.getStylesheets().add("view/protocolo.css");
             primaryStage.setTitle("CDM");
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
             primaryStage.show();           
         } catch (IOException e) {
             e.printStackTrace();
-        }                
+        }
     }
 
     /**

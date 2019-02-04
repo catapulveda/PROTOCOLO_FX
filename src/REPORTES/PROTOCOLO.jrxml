@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PROTOCOLO" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="eb75b2e1-959a-4fb9-b1e1-471136a585b3">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="825"/>
-	<property name="ireport.y" value="1896"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SQLite_PROTOCOLO"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="table_TH" mode="Opaque" backcolor="#BFE1FF">
@@ -1689,7 +1689,7 @@
 			</rectangle>
 			<image hAlign="Center" vAlign="Middle">
 				<reportElement x="2" y="1" width="87" height="80" uuid="1641a097-a5c9-441a-b4a4-836c94084572"/>
-				<imageExpression><![CDATA[getClass().getResource("/newpackage/LOGO CDM.png")]]></imageExpression>
+				<imageExpression><![CDATA[getClass().getResource("/images/LOGO CDM.png")]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="206" y="250" width="85" height="10" uuid="4468643d-102b-4c9f-866e-9b358af44da0"/>

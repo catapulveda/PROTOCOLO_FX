@@ -59,8 +59,7 @@ public class Celda<S, T> extends TextFieldTableCell<S, T> {
 
     @Override
     public void updateItem(T item, boolean empty) {
-        super.updateItem(item, empty);
-        System.out.println("El solo item es: " + item);
+        super.updateItem(item, empty);        
         if (empty || item == null) {
             setText(null);
             setGraphic(null);
@@ -83,9 +82,9 @@ public class Celda<S, T> extends TextFieldTableCell<S, T> {
                 }                
                                 
                 if(min > Double.parseDouble(getItem().toString()) || Double.parseDouble(getItem().toString()) > max){
-                    setStyle("-fx-background-color: #bd2707; -fx-text-fill: white; -fx-font-weight: bold;");
+                    setStyle("-fx-background-color: #bd2707; -fx-text-fill: white; -fx-font-weight: bold;-fx-alignment: CENTER;");
                 }else{
-                    setStyle(null);
+                    setStyle("-fx-alignment: CENTER;");
                 }
             }
         }

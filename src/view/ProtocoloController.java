@@ -1,4 +1,4 @@
-package newpackage;
+package view;
 
 import clases.Conexion;
 import clases.Metodos;
@@ -283,7 +283,7 @@ public class ProtocoloController implements Initializable {
                       
         try {
             Tab tabProtocolos = new Tab("Protocolos");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ListaProtocolos.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ListaProtocolos.fxml"));
             AnchorPane ap3 = loader.load();
             tabProtocolos.setContent(ap3);
             ListaProtocolosController lpc = loader.getController();
@@ -291,12 +291,12 @@ public class ProtocoloController implements Initializable {
             tabPane.getTabs().add(tabProtocolos);
             
             Tab tabTablasMonofasicos = new Tab("Tablas Monofásicos");
-            AnchorPane ap = new FXMLLoader(getClass().getResource("TablasMonofasicos.fxml")).load();
+            AnchorPane ap = new FXMLLoader(getClass().getResource("/view/TablasMonofasicos.fxml")).load();
             tabTablasMonofasicos.setContent(ap);
             tabPane.getTabs().add(tabTablasMonofasicos);
             
             Tab tabTablasTrifasicos = new Tab("Tablas Trifásicos");
-            AnchorPane ap2 = new FXMLLoader(getClass().getResource("TablasTrifasicos.fxml")).load();
+            AnchorPane ap2 = new FXMLLoader(getClass().getResource("/view/TablasTrifasicos.fxml")).load();
             tabTablasTrifasicos.setContent(ap2);
             tabPane.getTabs().add(tabTablasTrifasicos);                        
         } catch (IOException ex) {
@@ -414,10 +414,6 @@ public class ProtocoloController implements Initializable {
         colFaseU.setEditable(true);
         colFaseU.setCellValueFactory(new PropertyValueFactory<>("faseu"));
         colFaseU.setCellFactory(tc -> new clases.Celda(new clases.MyDoubleStringConverter(), tablaDos));
-        //colFaseU.setCellFactory(EditCell.<DatosTablaUno, Double>forTableColumn(new MyDoubleStringConverter()));        
-//        colFaseU.setOnEditCommit(event->{
-//            ( (DatosTablaUno) event.getTableView().getItems().get(event.getTablePosition().getRow()) ).setFaseu(event.getNewValue());
-//        });
         
         colFaseV.setEditable(true);
         colFaseV.setCellValueFactory(new PropertyValueFactory<>("fasev"));
@@ -673,7 +669,7 @@ public class ProtocoloController implements Initializable {
         for (int i = 1; i <= 5; i++) {
             if(listaDatosTablaUno.size()==5){
                 listaDatosTablaUno.get((i-1)).setTension((int) Math.round(Integer.parseInt(cjvp.getText())*factor));                
-            }else{
+            }else{                
                 DatosTablaUno tu = new DatosTablaUno();
                 tu.setPosicion((i));
                 tu.setTension((int) Math.round(Integer.parseInt(cjvp.getText())*factor));
@@ -791,7 +787,6 @@ public class ProtocoloController implements Initializable {
     
     @FXML
     void calcular(ActionEvent evt){ 
-        JOptionPane.showMessageDialog(null, "CALCULANDO");
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Faltan Datos");
@@ -1116,13 +1111,13 @@ public class ProtocoloController implements Initializable {
                 M(cjiw, "iw", rs);
                 M(cjpromedioi, "promedioi", rs);
                 M(cjiogarantizado, "iogarantizado", rs);
-                M(cjpomedido, "pomedido", rs);
                 M(cjpogarantizado, "pogarantizado", rs);
+                M(cjpomedido, "pomedido", rs);
+                M(cji2r, "i2r", rs);
                 M(cjvcc, "vcc", rs);
                 M(cjpccmedido, "pccmedido", rs);
                 M(cjpcca85, "pcca85", rs);
-                M(cjpccgarantizado, "pccgarantizado", rs);
-                M(cji2r, "i2r", rs);
+                M(cjpccgarantizado, "pccgarantizado", rs);                
                 M(cji2ra85, "i2ra85", rs);
                 M(cjz, "z", rs);
                 M(cjza85, "za85", rs);
@@ -1142,8 +1137,30 @@ public class ProtocoloController implements Initializable {
                 M(cjcliente, "cliente", rs);
                 M(cjobservaciones, "observaciones", rs);
                 cjfecha.setValue(LocalDate.parse(rs.getString("fechadeprotocolo")));
-//"                          punou, punov, punow, pdosu, pdosv, pdosw, ptresu, ptresv, ptresw, pcuatrou,\n" +
-//"                          pcuatrov, pcuatrow, pcincou, pcincov, pcincow
+                
+                cargarTablaDos(null);
+                cargarTablaUno(null);
+                
+                listaDatosTablaUno.get(0).setFaseu(rs.getDouble("punou"));
+                listaDatosTablaUno.get(0).setFasev(rs.getDouble("punov"));
+                listaDatosTablaUno.get(0).setFasew(rs.getDouble("punow"));
+                
+                listaDatosTablaUno.get(1).setFaseu(rs.getDouble("pdosu"));
+                listaDatosTablaUno.get(1).setFasev(rs.getDouble("pdosv"));
+                listaDatosTablaUno.get(1).setFasew(rs.getDouble("pdosw"));
+                
+                listaDatosTablaUno.get(2).setFaseu(rs.getDouble("ptresu"));
+                listaDatosTablaUno.get(2).setFasev(rs.getDouble("ptresv"));
+                listaDatosTablaUno.get(2).setFasew(rs.getDouble("ptresw"));
+                
+                listaDatosTablaUno.get(3).setFaseu(rs.getDouble("pcuatrou"));
+                listaDatosTablaUno.get(3).setFasev(rs.getDouble("pcuatrov"));
+                listaDatosTablaUno.get(3).setFasew(rs.getDouble("pcuatrow"));
+                
+                listaDatosTablaUno.get(4).setFaseu(rs.getDouble("pcincou"));
+                listaDatosTablaUno.get(4).setFasev(rs.getDouble("pcincov"));
+                listaDatosTablaUno.get(4).setFasew(rs.getDouble("pcincow"));
+
                 tabPane.getSelectionModel().selectFirst();
             }
         } catch (SQLException ex) {

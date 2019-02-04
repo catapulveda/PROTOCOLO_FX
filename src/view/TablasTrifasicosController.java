@@ -1,4 +1,4 @@
-package newpackage;
+package view;
 
 import clases.Conexion;
 import java.net.URL;

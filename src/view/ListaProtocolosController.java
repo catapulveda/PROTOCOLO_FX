@@ -1,4 +1,4 @@
-package newpackage;
+package view;
 
 import clases.Conexion;
 import java.net.URL;
@@ -28,7 +28,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import static newpackage.TablasTrifasicosController.changeSizeOnColumn;
+import static view.TablasTrifasicosController.changeSizeOnColumn;
 
 public class ListaProtocolosController implements Initializable {
 

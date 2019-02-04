@@ -26,8 +26,8 @@ public class MyDoubleStringConverter extends javafx.util.converter.DoubleStringC
 
     @Override
     public String toString(Double object) {
-        System.out.println("El solo object es: "+object+"\t Formateado es: "+format.format(object));
+//        System.out.println("El solo object es: "+object+"\t Formateado es: "+format.format(object));
         return format.format(object);
-    }    
+    }
     
 }
