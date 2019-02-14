@@ -29,7 +29,6 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-
 <VBox fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProtocoloController">
    <children>
       <MenuBar>
@@ -60,9 +59,9 @@
                            <left>
                               <ToolBar orientation="VERTICAL" prefHeight="775.0" prefWidth="48.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
                                  <items>
-                                    <JFXButton fx:id="btnCalcular" buttonType="RAISED" contentDisplay="TOP" maxWidth="1.7976931348623157E308" onAction="#calcular" ripplerFill="#0e4894" text="Calcular">
+                                    <JFXButton fx:id="btnNuevo" buttonType="RAISED" contentDisplay="TOP" layoutX="10.0" layoutY="72.0" maxWidth="1.7976931348623157E308" onAction="#nuevo" ripplerFill="#0e4894" text="Nuevo">
                                        <graphic>
-                                          <FontIcon iconColor="#525354" iconLiteral="fa-calculator" iconSize="24" />
+                                          <FontIcon iconColor="#19e427" iconLiteral="fa-file-o" iconSize="24" />
                                        </graphic>
                                        <styleClass>
                                           <String fx:value="btn" />
@@ -70,13 +69,27 @@
                                           <String fx:value="btn-sm" />
                                        </styleClass>
                                        <font>
-                                          <Font name="Serif Bold" size="12.0" />
+                                          <Font name="Verdana" size="12.0" />
+                                       </font>
+                                    </JFXButton>
+                                    <Separator layoutX="10.0" layoutY="65.0" maxWidth="1.7976931348623157E308" />
+                                    <JFXButton fx:id="btnCalcular" buttonType="RAISED" contentDisplay="TOP" maxWidth="1.7976931348623157E308" onAction="#calcular" ripplerFill="#0e4894" text="Calcular">
+                                       <graphic>
+                                          <FontIcon iconColor="#cd7324" iconLiteral="fa-calculator" iconSize="24" />
+                                       </graphic>
+                                       <styleClass>
+                                          <String fx:value="btn" />
+                                          <String fx:value="btn-primary" />
+                                          <String fx:value="btn-sm" />
+                                       </styleClass>
+                                       <font>
+                                          <Font name="Verdana" size="12.0" />
                                        </font>
                                     </JFXButton>
                                     <Separator maxWidth="1.7976931348623157E308" />
                                     <JFXButton fx:id="btnGuardar" buttonType="RAISED" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" onAction="#guardar" ripplerFill="#0e4894" text="Guardar">
                                        <graphic>
-                                          <FontIcon iconColor="#525354" iconLiteral="fa-save" iconSize="24" />
+                                          <FontIcon iconColor="#1077ab" iconLiteral="fa-save" iconSize="24" />
                                        </graphic>
                                        <styleClass>
                                           <String fx:value="btn" />
@@ -84,9 +97,10 @@
                                           <String fx:value="btn-sm" />
                                        </styleClass>
                                        <font>
-                                          <Font name="Serif Bold" size="12.0" />
+                                          <Font name="Verdana" size="12.0" />
                                        </font>
                                     </JFXButton>
+                                    <Separator layoutX="10.0" layoutY="65.0" maxWidth="1.7976931348623157E308" />
                                  </items>
                                  <effect>
                                     <InnerShadow radius="7.25" width="10.0" />

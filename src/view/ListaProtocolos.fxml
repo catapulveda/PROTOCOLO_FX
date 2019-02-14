@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="view.ListaProtocolosController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ListaProtocolosController">
    <children>
       <TableView fx:id="tabla" editable="true" layoutX="62.0" layoutY="52.0" onMouseClicked="#abrirProtocolo" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columns>
-          <TableColumn fx:id="colCliente" prefWidth="75.0" text="CLIENTE" />
+            <TableColumn prefWidth="37.0">
+               <graphic>
+                  <Button fx:id="btnRefrescar" mnemonicParsing="false" onAction="#recargarTabla">
+                     <graphic>
+                        <FontIcon iconLiteral="fa-refresh" iconSize="18" />
+                     </graphic>
+                  </Button>
+               </graphic>
+            </TableColumn>
+          <TableColumn fx:id="colCliente" prefWidth="113.0" text="CLIENTE" />
+            <TableColumn fx:id="colProtocolo" prefWidth="75.0" text="Nº PROTOCOLO" />
           <TableColumn fx:id="colSerie" prefWidth="75.0" text="SERIE" />
             <TableColumn fx:id="colKva" prefWidth="75.0" text="KVA" />
             <TableColumn fx:id="coltension" prefWidth="75.0" text="TENSION" />

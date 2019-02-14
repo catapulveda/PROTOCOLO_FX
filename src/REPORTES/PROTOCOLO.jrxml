@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PROTOCOLO" pageWidth="595" pageHeight="842" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="eb75b2e1-959a-4fb9-b1e1-471136a585b3">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.x" value="604"/>
+	<property name="ireport.y" value="1552"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SQLite_PROTOCOLO"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<style name="table_TH" mode="Opaque" backcolor="#BFE1FF">
@@ -1994,12 +1994,12 @@
 				</textElement>
 				<textFieldExpression><![CDATA[(($V{tension5}*$V{multiplicador})/$F{vs})*1.005]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy">
+			<textField>
 				<reportElement x="388" y="690" width="178" height="14" uuid="9be24b28-c23d-4406-86c8-6a4a0db09191"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", java.util.Locale.getDefault()).parse($F{fechaderegistro}.toString())]]></textFieldExpression>
+				<textFieldExpression><![CDATA["FECHA: "+new SimpleDateFormat("dd-MM-yyyy").format(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", java.util.Locale.getDefault()).parse($F{fechaderegistro}.toString()))]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

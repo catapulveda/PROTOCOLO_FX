@@ -2,8 +2,10 @@ package view;
 
 import java.io.IOException;
 import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -16,10 +18,15 @@ public class Main extends Application {
             VBox root = (VBox) loader.load();
             Scene scene = new Scene(root);
             scene.getStylesheets().add("view/protocolo.css");
+            
+            primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/trafo.png")));
+            
             primaryStage.setTitle("CDM");
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
-            primaryStage.show();           
+            primaryStage.show();
+            
+            
         } catch (IOException e) {
             e.printStackTrace();
         }

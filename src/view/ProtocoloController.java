@@ -37,7 +37,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -74,6 +76,7 @@ public class ProtocoloController implements Initializable {
     private ObservableList<DatosTablaUno> listaDatosTablaUno = FXCollections.observableArrayList();
     private final StringProperty ESTADO_TRAFO = new SimpleStringProperty("Servicio:");       
     private final BooleanProperty ACTUALIZANDO = new SimpleBooleanProperty(false);      
+    private final IntegerProperty IDPROTOCOLO = new SimpleIntegerProperty();       
     
     @FXML
     private VBox rootPane;
@@ -277,6 +280,8 @@ public class ProtocoloController implements Initializable {
     private JFXDatePicker cjfecha;
     @FXML
     private MenuItem menuCalcular;
+    @FXML
+    private JFXButton btnNuevo;
             
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -540,6 +545,11 @@ public class ProtocoloController implements Initializable {
         
         /*COPIAR AUTOMATICAMENTE EL VALOR DEL VOLTAJE SECUNDARIO EN LOS CAMPOS*/
         cjvs.textProperty().addListener((event, old, neww)->{
+            if(neww==null){
+                cjtensionBT.setText(null);
+                cjtensionBT2.setText(null);
+                return;
+            }
             cjtensionBT.setText(String.valueOf(Integer.parseInt(neww)*2));
             cjtensionBT2.setText(neww);
         });        
@@ -682,9 +692,13 @@ public class ProtocoloController implements Initializable {
     
     void cargarTablaDos(ActionEvent evt){
         int vs = getInteger(cjvs);
+        System.out.println("vs es "+vs);
         if(vs==0)return;
+        System.out.println("vs es "+vs);
         tablaDos.getItems().clear();
+        System.out.println("vs es "+vs);
         tablaUno.getItems().forEach(i->{
+            System.out.println("cargando tabla dos");
             double multiplicador = (comboFases.getValue()==1)?1:Math.sqrt(3);
             DatosTablaDos td = new DatosTablaDos();
             td.setNominal( Math.round( ((i.getTension()*multiplicador)/vs)*1000d )/1000d );
@@ -698,8 +712,53 @@ public class ProtocoloController implements Initializable {
     private void guardar(ActionEvent evt){
         Alert alerta = new Alert(AlertType.CONFIRMATION, "Desea continuar ?", ButtonType.YES, ButtonType.NO);
         if(alerta.showAndWait().get()==ButtonType.YES){
-            
-            String sql = "INSERT INTO protocolo (\n" +
+            String sql = null;
+            if(isACTUALIZANDO()){
+                sql = "UPDATE protocolo SET \n" +
+"                          codigo='"+cjprotocolo.getText().trim()+"', serie='"+cjserie.getText().trim()+"', empresa= '"+cjempresa.getText().trim()+"', "
+                        + "marca='"+cjmarca.getText().trim()+"', kva='"+cjkva.getText().trim()+"', fase='"+comboFases.getValue()+"', ano='"+cjano.getText().trim()+"', "
+                        + "vp='"+cjvp.getText().trim()+"', vs='"+cjvs.getText().trim()+"', servicio='"+comboServicio.getValue()+"',\n" +
+"                          estadoservicio='"+ESTADO_TRAFO.get()+"', frecuencia='"+cjfrecuencia.getText().trim()+"', refrigeracion='"+comboRefrigeracion.getValue()+"', "
+                        + "tensionserie='"+cjtensionserie.getText().trim()+"', nba='"+cjnba.getText().trim()+"', caldev='"+cjcalentamientodevanado.getText().trim()+"',\n" +
+"                          claseaislamiento='"+comboClaseAislamiento.getValue()+"', altdiseno='"+cjalturadiseno.getText().trim()+"', i1='"+cji1.getText().trim()+"', "
+                        + "i2='"+cji2.getText().trim()+"', dervprim='"+comboDerivacion.getValue()+"', temperatura='"+cjtemperaturadeprueba.getText().trim()+"', "
+                        + "conmutador='"+comboConmutador.getValue()+"', aceite='"+comboAceite.getValue()+"', referenciaaceite='"+comboReferencia.getValue()+"', "
+                        + "ruptura='"+cjruptura.getText().trim()+"', metodo='"+cjmetodo.getText().trim()+"', tiemporesistencia='"+cjtiemporesistencia.getText().trim()+"', "
+                        + "tensiondeprueba='"+comboTensiondeprueba.getValue()+"', atcontrabt='"+cjATcontraBT.getText().trim()+"', atcontratierra='"+cjATcontraTierra.getText().trim()+"', "
+                        + "btcontratierra='"+cjBTcontraTierra.getText().trim()+"', grupodeconexion='"+comboConexion.getValue()+"', polaridad='"+comboPolaridad.getValue()+"',\n" +
+"                          uv='"+cjUV.getText().trim()+"', vw='"+cjVW.getText().trim()+"', wu='"+cjWU.getText().trim()+"', proresalta='"+cjproresalta.getText().trim()+"', "+
+"                          materialalta='"+comboMaterialAlta.getValue()+"', xy='"+cjXY.getText().trim()+"',\n" +
+"                          yz='"+cjYZ.getText().trim()+"', zx='"+cjZX.getText().trim()+"',\n" +
+"                          proresbaja='"+cjproresbaja.getText().trim()+"', materialbaja='"+comboMaterialBaja.getValue()+"',\n" +
+"                          btcontraatytierra='"+cjBTcontraATyTierra.getText().trim()+"', atcontrabtytierra='"+cjATcontraBTyTierra.getText().trim()+"',\n" +
+"                          tiempodeprueba='"+cjtiempoaplicado.getText().trim()+"', tensionbt='"+cjtensionBT.getText().trim()+"',\n" +
+"                          frecuencia2='"+cjFrecuenciaInducida.getText().trim()+"', tiempodeprueba2='"+cjtiempoInducido.getText().trim()+"',\n" +
+"                          tensionbt2='"+cjtensionBT2.getText().trim()+"', iu='"+cjiu.getText().trim()+"',\n" +
+"                          iv='"+cjiv.getText().trim()+"', iw='"+cjiw.getText().trim()+"iw',\n" +
+"                          promedioi='"+cjpromedioi.getText().trim()+"', iogarantizado='"+cjiogarantizado.getText().trim()+"',\n" +
+"                          pomedido='"+cjpomedido.getText().trim()+"', pogarantizado='"+cjpogarantizado.getText().trim()+"',\n" +
+"                          vcc='"+cjvcc.getText().trim()+"', pccmedido='"+cjpccmedido.getText().trim()+"',\n" +
+"                          pcca85='"+cjpcca85.getText().trim()+"', pccgarantizado='"+cjpccgarantizado.getText().trim()+"',\n" +
+"                          i2r='"+cji2r.getText().trim()+"', i2ra85='"+cji2ra85.getText().trim()+"',\n" +
+"                          z='"+cjz.getText().trim()+"', za85='"+cjza85.getText().trim()+"',\n" +
+"                          zgarantizado='"+cjzgarantizado.getText().trim()+"', reg='"+cjregulacion.getText().trim()+"',\n" +
+"                          ef='"+cjeficiencia.getText().trim()+"', masa='"+cjmasa.getText().trim()+"',\n" +
+"                          volumen='"+cjaceite.getText().trim()+"', largo='"+cjlargo.getText().trim()+"',\n" +
+"                          ancho='"+cjancho.getText().trim()+"', alto='"+cjalto.getText().trim()+"',\n" +
+"                          color='"+cjcolor.getText().trim()+"', espesor='"+cjespesor.getText().trim()+"',\n" +
+"                          elementos='"+cjelementos.getText().trim()+"', largoelemento='"+cjlargoelemento.getText().trim()+"',\n" +
+"                          anchoelemento='"+cjanchoelemento.getText().trim()+"', cliente='"+cjcliente.getText().trim()+"',\n" +
+"                          observaciones='"+cjobservaciones.getText().trim()+"', fechadeprotocolo='"+cjfecha.getValue()+"',\n" +
+"                          punou='"+listaDatosTablaUno.get(0).getFaseu()+"', punov='"+listaDatosTablaUno.get(0).getFasev()+"',\n" +
+"                          punow='"+listaDatosTablaUno.get(0).getFasew()+"', pdosu='"+listaDatosTablaUno.get(1).getFaseu()+"',\n" +
+"                          pdosv='"+listaDatosTablaUno.get(1).getFasev()+"', pdosw='"+listaDatosTablaUno.get(1).getFasew()+"',\n" +
+"                          ptresu='"+listaDatosTablaUno.get(2).getFaseu()+"', ptresv='"+listaDatosTablaUno.get(2).getFasev()+"',\n" +
+"                          ptresw='"+listaDatosTablaUno.get(2).getFasew()+"', pcuatrou='"+listaDatosTablaUno.get(3).getFaseu()+"',\n" +
+"                          pcuatrov='"+listaDatosTablaUno.get(3).getFasev()+"', pcuatrow='"+listaDatosTablaUno.get(3).getFasew()+"',\n" +
+"                          pcincou='"+listaDatosTablaUno.get(4).getFaseu()+"', pcincov='"+listaDatosTablaUno.get(4).getFasev()+"',\n" +
+"                          pcincow='"+listaDatosTablaUno.get(4).getFasew()+"' WHERE idprotocolo="+getIDPROTOCOLO();
+            }else{
+                sql = "INSERT INTO protocolo (\n" +
 "                          codigo, serie, empresa, marca, kva, fase, ano, vp, vs, servicio,\n" +
 "                          estadoservicio, frecuencia, refrigeracion, tensionserie, nba, caldev,\n" +
 "                          claseaislamiento, altdiseno, i1, i2, dervprim, temperatura, conmutador,\n" +
@@ -764,18 +823,24 @@ public class ProtocoloController implements Initializable {
 "                          '"+listaDatosTablaUno.get(4).getFaseu()+"', '"+listaDatosTablaUno.get(4).getFasev()+"',\n" +
 "                          '"+listaDatosTablaUno.get(4).getFasew()+"'\n" +
 "                      );";
+            }                        
 
             clases.Conexion con = new Conexion();            
             try {
                 PreparedStatement pst = con.getCon().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 if(pst.executeUpdate()>0){
-                    ResultSet rs = pst.getGeneratedKeys();
-                    rs.next();
-                    JasperReport reporte = (JasperReport) JRLoader.loadObject(new URL(this.getClass().getResource("PROTOCOLO.jasper").toString()));         
+                    if(!isACTUALIZANDO()){
+                        ResultSet rs = pst.getGeneratedKeys();
+                        rs.next();
+                        setIDPROTOCOLO(rs.getInt(1));
+                    }                    
+                    JasperReport reporte = (JasperReport) JRLoader.loadObject(new URL(this.getClass().getResource("/REPORTES/PROTOCOLO.jasper").toString()));         
                     Map<String, Object> p = new HashMap<>();
-                    p.put("IDPROTOCOLO", rs.getInt(1));
+                    p.put("IDPROTOCOLO", getIDPROTOCOLO());
                     JasperPrint jasperprint = JasperFillManager.fillReport(reporte, p, con.getCon());
                     JasperViewer.viewReport(jasperprint, false);
+                    
+                    limpiar();
                 }
             } catch (MalformedURLException | SQLException | JRException ex) {
                 Logger.getLogger(ProtocoloController.class.getName()).log(Level.SEVERE, null, ex);
@@ -1029,6 +1094,11 @@ public class ProtocoloController implements Initializable {
                 
     }
     
+    @FXML
+    void nuevo(ActionEvent evt){
+        limpiar();
+    }
+    
     private void UpDown(Node n1, Node n2, Node n3){
         n1.setOnKeyPressed((evt)->{
             if(null!=evt.getCode())switch (evt.getCode()) {
@@ -1048,12 +1118,13 @@ public class ProtocoloController implements Initializable {
     }
     
     public void abrirProtocolo(int idprotocolo){
-        try {
-            Conexion con = new Conexion();
+        Conexion con = new Conexion();
+        try {            
             String sql = "SELECT * FROM protocolo WHERE idprotocolo="+idprotocolo;
             Statement st = con.getCon().createStatement();
             ResultSet rs = st.executeQuery(sql);
             if(rs.next()){
+                setIDPROTOCOLO(idprotocolo);
                 setACTUALIZANDO(true);
                 M(cjprotocolo, "codigo", rs);
                 M(cjserie, "serie", rs);
@@ -1135,11 +1206,12 @@ public class ProtocoloController implements Initializable {
                 M(cjlargoelemento, "largoelemento", rs);
                 M(cjanchoelemento, "anchoelemento", rs);
                 M(cjcliente, "cliente", rs);
-                M(cjobservaciones, "observaciones", rs);
+                cjobservaciones.setText(rs.getString("observaciones"));
                 cjfecha.setValue(LocalDate.parse(rs.getString("fechadeprotocolo")));
                 
                 cargarTablaDos(null);
                 cargarTablaUno(null);
+                cargarTablaDos(null);
                 
                 listaDatosTablaUno.get(0).setFaseu(rs.getDouble("punou"));
                 listaDatosTablaUno.get(0).setFasev(rs.getDouble("punov"));
@@ -1165,6 +1237,8 @@ public class ProtocoloController implements Initializable {
             }
         } catch (SQLException ex) {
             Logger.getLogger(ProtocoloController.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            con.cerrar();
         }
     }
     
@@ -1174,6 +1248,67 @@ public class ProtocoloController implements Initializable {
         }else if(node instanceof ComboBox){
             ((ComboBox)node).getSelectionModel().select(rs.getObject(str));
         }
+    }
+    
+    private void limpiar(){
+        cjprotocolo.setText(null);
+        cjserie.setText(null);
+        cjempresa.setText(null);
+        cjmarca.setText(null);
+        cjkva.setText("0");
+        cjano.setText("0");
+        cjvp.setText("0");
+        cjvs.setText("0");
+        cji1.setText("0");
+        cji2.setText("0");
+        cjtemperaturadeprueba.setText("0");
+        cjATcontraBT.setText("0");
+        cjATcontraTierra.setText("0");
+        cjBTcontraTierra.setText("0");
+        cjUV.setText("0");
+        cjVW.setText("0");
+        cjWU.setText("0");
+        cjproresalta.setText(null);
+        cjXY.setText("0");
+        cjYZ.setText("0");
+        cjZX.setText("0");
+        cjproresbaja.setText("0");
+        cjiu.setText("0");
+        cjiv.setText("0");
+        cjiw.setText("0");
+        cjpromedioi.setText("0");
+        cjiogarantizado.setText("0");
+        cjpomedido.setText("0");
+        cjpogarantizado.setText("");
+        cjvcc.setText("0");
+        cjpccmedido.setText("0");
+        cjpcca85.setText("0");
+        cjpccgarantizado.setText("0");
+        cji2r.setText("0");
+        cji2ra85.setText("0");
+        cjz.setText("0");
+        cjza85.setText("0");
+        cjzgarantizado.setText("0");
+        cjregulacion.setText("0");
+        cjeficiencia.setText("0");
+        cjmasa.setText("0");
+        cjaceite.setText("");
+        cjlargo.setText("0");
+        cjancho.setText("0");
+        cjalto.setText("0");
+        cjcolor.setText("0");
+        cjespesor.setText("0");
+        cjelementos.setText("0");
+        cjlargoelemento.setText("0");
+        cjanchoelemento.setText("0");
+        cjcliente.setText("0");
+        cjobservaciones.setText("0");
+
+        setIDPROTOCOLO(0);
+        setACTUALIZANDO(false);
+        
+        listaDatosTablaUno.clear();
+        tablaDos.getItems().clear();
     }
     
     public void showTabPane(int index){
@@ -1202,5 +1337,17 @@ public class ProtocoloController implements Initializable {
 
     public BooleanProperty ACTUALIZANDOProperty() {
         return ACTUALIZANDO;
+    }
+    
+    public int getIDPROTOCOLO() {
+        return IDPROTOCOLO.get();
+    }
+
+    public void setIDPROTOCOLO(int value) {
+        IDPROTOCOLO.set(value);
+    }
+
+    public IntegerProperty IDPROTOCOLOProperty() {
+        return IDPROTOCOLO;
     }
 }
